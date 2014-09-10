@@ -1,0 +1,3 @@
+xrow_ez_publish_solr_docs_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:index }

@@ -1,0 +1,81 @@
+imports:
+    - {resource: legacy_solrdoc/content.yml}
+    - {resource: legacy_solrdoc/content_type.yml}
+    - {resource: legacy_solrdoc/external_storage_gateways.yml}
+    - {resource: legacy_solrdoc/field_value_converters.yml}
+    - {resource: legacy_solrdoc/language.yml}
+    - {resource: legacy_solrdoc/location.yml}
+    - {resource: legacy_solrdoc/object_state.yml}
+    - {resource: legacy_solrdoc/search.yml}
+    - {resource: legacy_solrdoc/search_query_handlers.yml}
+    - {resource: legacy_solrdoc/section.yml}
+    - {resource: legacy_solrdoc/trash.yml}
+    - {resource: legacy_solrdoc/url_alias.yml}
+    - {resource: legacy_solrdoc/url_wildcard.yml}
+    - {resource: legacy_solrdoc/user.yml}
+    - {resource: solrdocsconfig.yml}
+
+parameters:
+    ezpublish.spi.persistence.legacy_solrdoc.class: eZ\Publish\Core\Persistence\Legacy\Handler
+    ezpublish.api.storage_engine.legacy_solrdoc.dbhandler.class: eZ\Publish\Core\Persistence\Doctrine\ConnectionHandler
+    ezpublish.persistence.solrconnection.class: Doctrine\DBAL\Driver\Connection
+    ezpublish_solrdoc.persistence.slug_converter.class: eZ\Publish\Core\Persistence\Legacy\Content\UrlAlias\SlugConverter
+    ezpublish_solrdoc.persistence.external_storage_registry.class: EzSystems\SolrDocsBundle\Persistence\Legacysolrdoc\Content\StorageRegistry
+    ezpublish_solrdoc.persistence.external_storage_registry.factory.class: eZ\Publish\Core\Base\Container\ApiLoader\Storage\ExternalStorageRegistryFactory
+    ezpublish.persistence.legacy_solrdoc.field_value_converter.registry.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\ConverterRegistry
+    ezpublish.spi.persistence.legacy_solrdoc.transactionhandler.class: eZ\Publish\Core\Persistence\Legacy\TransactionHandler
+    languages: []
+    anonymous_user_id: 10
+    legacy_solrdoc_dsn: sqlite://:memory:
+    legacy_dsn: sqlite://:memory:
+
+
+services:
+    ezpublish_solrdoc.persistence.slug_converter:
+        class: %ezpublish.persistence.slug_converter.class%
+        arguments: [@ezpublish.api.storage_engine.transformation_processor]
+    ezpublish.spi.persistence.legacy_solrdoc:
+        class: %ezpublish.spi.persistence.legacy.class%
+        arguments:
+            - @ezpublish.spi.persistence.legacy.content.handler
+            - @ezpublish.spi.persistence.legacy.search.handler.content
+            - @ezpublish.spi.persistence.legacy.content_type.handler
+            - @ezpublish.spi.persistence.legacy.language.handler
+            - @ezpublish.spi.persistence.legacy.location.handler
+            - @ezpublish.spi.persistence.legacy.search.handler.location
+            - @ezpublish.spi.persistence.legacy.object_state.handler
+            - @ezpublish.spi.persistence.legacy.section.handler
+            - @ezpublish.spi.persistence.legacy.transactionhandler
+            - @ezpublish.spi.persistence.legacy.trash.handler
+            - @ezpublish.spi.persistence.legacy.url_alias.handler
+            - @ezpublish.spi.persistence.legacy.url_wildcard.handler
+            - @ezpublish.spi.persistence.legacy.user.handler
+        tags:
+            - {name: ezpublish.storageEngine, alias: legacy}
+        lazy: false
+
+    ezpublish.api.storage_engine.legacy_solrdoc.connection:
+        class: %ezpublish.persistence.connection.class%
+        factory_class: %ezpublish.api.storage_engine.legacy.dbhandler.class%
+        factory_method: createConnectionFromDSN
+        arguments:
+            - %legacy_dsn%
+
+    ezpublish.spi.persistence.legacy_solrdoc.transactionhandler:
+        class: %ezpublish.spi.persistence.legacy.transactionhandler.class%
+        arguments:
+            - @ezpublish.api.storage_engine.legacy.dbhandler
+            - @ezpublish.spi.persistence.legacy.content_type.handler.caching
+            - @ezpublish.spi.persistence.legacy.language.handler.caching
+            
+    ezpublish_solrdoc.persistence.external_storage_registry.factory:
+        class: %ezpublish.persistence.external_storage_registry.factory.class%
+        calls:
+            - [setContainer, [@service_container]]
+
+    ezpublish_solrdoc.persistence.external_storage_registry:
+        class: %ezpublish.persistence.external_storage_registry.class%
+        factory_service: ezpublish.persistence.external_storage_registry.factory
+        factory_method: buildExternalStorageRegistry
+        arguments:
+            - %ezpublish.persistence.external_storage_registry.class%

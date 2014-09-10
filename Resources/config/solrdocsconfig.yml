@@ -1,0 +1,135 @@
+parameters:
+    xrow_ez_publish_solr_docs.solrserver:
+      endpoint: 
+        localhost:
+          host: '127.0.0.1'
+          port: 8983
+          path: '/solr/'
+    xrow_ez_publish_solr_docs.solrglobalconfig:
+      meta_installation_url_ms: "http://www.example.com/"
+      meta_installation_id_ms: "6f700e7b8963e3abb508b9708f4529bc"
+      meta_owner_name_t: "Administrator User"
+      meta_owner_group_id_si: 13
+      meta_object_states_si: 1
+      meta_language_code_ms: "ger-DE"
+    xrow_ez_publish_solr_docs.solr_classes:
+        s_artikel:
+            names:
+                'ger-DE': "Neuer SolrArtikel"
+            descriptions:
+                'ger-DE': ""
+            contentTypeGroups:
+            id: 1000
+            status: 0
+            identifier: "s_artikel"
+            creationDate: 1410248460
+            modificationDate: 1410248460
+            creatorId: 14
+            modifierId: 14
+            remoteId: 40faa822edc579b02c25f6bb7beec3ad
+            urlAliasSchema: ""
+            nameSchema: "<titel>"
+            isContainer: true
+            mainLanguageCode: "ger-DE"
+            defaultAlwaysAvailable: true
+            defaultSortField: 1
+            defaultSortOrder: 1
+            fields:
+              titel:
+                  id: 1
+                  identifier: "titel"
+                  fieldTypeIdentifier: "ezstring"
+                  names:
+                      'ger-DE': "Titel"
+                  descriptions:
+                      'ger-DE': "Titel"
+                  fieldGroup : ""
+                  position : 1
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              veroeffentlichungsdatum:
+                  id: 2
+                  identifier: "veroeffentlichungsdatum"
+                  fieldTypeIdentifier: "ezdatetime"
+                  names:
+                      'ger-DE': "Veröffentlichungsdatum"
+                  descriptions:
+                      'ger-DE': "Veröffentlichungsdatum"
+                  fieldGroup : ""
+                  position : 2
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              vorspann:
+                  id: 3
+                  identifier: "vorspann"
+                  fieldTypeIdentifier: "eztext"
+                  names:
+                      'ger-DE': "Vorspann"
+                  descriptions:
+                      'ger-DE': "Vorspann"
+                  fieldGroup : ""
+                  position : 3
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              haupttext:
+                  id: 4
+                  identifier: "haupttext"
+                  fieldTypeIdentifier: "eztext"
+                  names:
+                      'ger-DE': "Haupttext"
+                  descriptions:
+                      'ger-DE': "Haupttext"
+                  fieldGroup : ""
+                  position : 4
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              schlagwoerter:
+                  id: 5
+                  identifier: "schlagwoerter"
+                  fieldTypeIdentifier: "ezkeyword"
+                  names:
+                      'ger-DE': "Schlagwörter"
+                  descriptions:
+                      'ger-DE': "Schlagwörter"
+                  fieldGroup : ""
+                  position : 5
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              rubriken:
+                  id: 6
+                  identifier: "rubriken"
+                  fieldTypeIdentifier: "ezkeyword"
+                  names:
+                      'ger-DE': "Rubriken"
+                  descriptions:
+                      'ger-DE': "Rubriken"
+                  fieldGroup : ""
+                  position : 6
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              url:
+                  id: 7
+                  identifier: "url"
+                  fieldTypeIdentifier: "ezurl"
+                  names:
+                      'ger-DE': "URL"
+                  descriptions:
+                      'ger-DE': "URL"
+                  fieldGroup : ""
+                  position : 7
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true

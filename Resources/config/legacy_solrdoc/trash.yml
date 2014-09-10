@@ -1,0 +1,12 @@
+parameters:
+    ezpublish.spi.persistence.legacy_solrdoc.trash.handler.class: eZ\Publish\Core\Persistence\Legacy\Content\Location\Trash\Handler
+
+services:
+    ezpublish.spi.persistence.legacy_solrdoc.trash.handler:
+        class: %ezpublish.spi.persistence.legacy_solrdoc.trash.handler.class%
+        arguments:
+            - @ezpublish.spi.persistence.legacy_solrdoc.location.handler
+            - @ezpublish.persistence.legacy_solrdoc.location.gateway.exception_conversion
+            - @ezpublish.persistence.legacy_solrdoc.location.mapper
+            - @ezpublish.spi.persistence.legacy_solrdoc.content.handler
+        lazy: true

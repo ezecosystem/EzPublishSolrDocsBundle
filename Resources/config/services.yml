@@ -1,0 +1,157 @@
+imports:
+- { resource: solrdocsconfig.yml }
+
+parameters:
+    # API
+    ezpublish.solrapi.repository.factory.class: eZ\Publish\Core\Base\Container\ApiLoader\RepositoryFactory
+    ezpublish.solrapi.inner_repository.class: xrow\EzPublishSolrDocsBundle\Repository\Repository
+    
+    ezpublish.solrfield_type_collection.factory.class: eZ\Publish\Core\Base\Container\ApiLoader\FieldTypeCollectionFactory
+    ezpublish.solrapi.storage_engine.class: eZ\Publish\SPI\Persistence\Handler
+
+    # API services
+    ezpublish.solrapi.service.content.class: xrow\EzPublishSolrDocsBundle\Repository\ContentService
+    ezpublish.solrapi.service.content_type.class: xrow\EzPublishSolrDocsBundle\Repository\ContentTypeService
+    ezpublish.solrapi.service.field_type.class: xrow\EzPublishSolrDocsBundle\Repository\FieldTypeService
+    ezpublish.solrapi.service.role.class: eZ\Publish\Core\Repository\RoleService
+    ezpublish.solrapi.service.object_state.class: eZ\Publish\Core\Repository\ObjectStateService
+    ezpublish.solrapi.service.url_wildcard.class: eZ\Publish\Core\Repository\URLWildcardService
+    ezpublish.solrapi.service.url_alias.class: eZ\Publish\Core\Repository\URLAliasService
+    ezpublish.solrapi.service.user.class: eZ\Publish\Core\Repository\UserService
+    ezpublish.solrapi.service.search.class: eZ\Publish\Core\Repository\SearchService
+    ezpublish.solrapi.service.section.class: eZ\Publish\Core\Repository\SectionService
+    ezpublish.solrapi.service.trash.class: eZ\Publish\Core\Repository\TrashService
+    ezpublish.solrapi.service.location.class: xrow\EzPublishSolrDocsBundle\Repository\LocationService
+
+    # Signal Slot API wrapper
+    ezpublish.solrsignalslot.repository.class: eZ\Publish\Core\SignalSlot\Repository
+    ezpublish.solrsignalslot.signal_dispatcher.class: eZ\Publish\Core\SignalSlot\SignalDispatcher\DefaultSignalDispatcher
+
+services:
+    # SOLRAPI
+    ezpublish.solrapi.persistence_handler:
+        #To disable cache, switch alias to ezpublish.api.storage_engine
+        alias: ezpublish.spi.persistence.cache
+        #alias: ezpublish.solrapi.storage_engine
+
+    ezpublish.solrapi.storage_engine:
+        #alias: ezpublish.spi.persistence.legacy
+        alias: ezpublish.spi.persistence.legacy_solrdoc
+        
+    ezpublish.solrapi.repository:
+        #alias: ezpublish.solrsignalslot.repository
+        alias: ezpublish.solrapi.inner_repository
+
+    ezpublish.solrfield_type_collection.factory:
+        class: %ezpublish.solrfield_type_collection.factory.class%
+        calls:
+            - [setContainer, [@service_container]]
+
+    ezpublish.solrapi.repository.factory:
+        class: %ezpublish.solrapi.repository.factory.class%
+        arguments:
+            - %ezpublish.solrapi.inner_repository.class%
+            - @ezpublish.field_type_collection.factory
+        calls:
+            - [setContainer, [@service_container]]
+
+    ezpublish.solrapi.inner_repository:
+        class: %ezpublish.solrapi.inner_repository.class%
+        factory_service: ezpublish.solrapi.repository.factory
+        factory_method: buildRepository
+        arguments:
+            - @ezpublish.solrapi.persistence_handler
+        lazy: false
+
+    ezpublish.solrapi.service.content:
+        class: %ezpublish.solrapi.service.content.class%
+        factory_service: ezpublish.solrapi.repository.factory
+        factory_method: buildService
+        arguments: [@ezpublish.solrapi.repository, Content]
+        lazy: false
+
+    ezpublish.solrapi.service.content_type:
+        class: %ezpublish.solrapi.service.content_type.class%
+        factory_service: ezpublish.solrapi.repository.factory
+        factory_method: buildService
+        arguments: [@ezpublish.solrapi.repository, ContentType]
+        lazy: flase
+
+    ezpublish.solrapi.service.field_type:
+        class: %ezpublish.solrapi.service.field_type.class%
+        factory_service: ezpublish.solrapi.repository.factory
+        factory_method: buildService
+        arguments: [@ezpublish.solrapi.repository, FieldType]
+        lazy: true
+
+    ezpublish.solrapi.service.role:
+        class: %ezpublish.solrapi.service.role.class%
+        factory_service: ezpublish.solrapi.repository.factory
+        factory_method: buildService
+        arguments: [@ezpublish.solrapi.repository, Role]
+        lazy: true
+
+    ezpublish.solrapi.service.object_state:
+        class: %ezpublish.solrapi.service.object_state.class%
+        factory_service: ezpublish.solrapi.repository.factory
+        factory_method: buildService
+        arguments: [@ezpublish.solrapi.repository, ObjectState]
+        lazy: true
+
+    ezpublish.solrapi.service.url_wildcard:
+        class: %ezpublish.solrapi.service.url_wildcard.class%
+        factory_service: ezpublish.solrapi.repository.factory
+        factory_method: buildService
+        arguments: [@ezpublish.solrapi.repository, URLWildcard]
+        lazy: true
+
+    ezpublish.solrapi.service.url_alias:
+        class: %ezpublish.solrapi.service.url_alias.class%
+        factory_service: ezpublish.solrapi.repository.factory
+        factory_method: buildService
+        arguments: [@ezpublish.solrapi.repository, URLAlias]
+        lazy: true
+
+    ezpublish.solrapi.service.user:
+        class: %ezpublish.api.service.user.class%
+        factory_service: ezpublish.api.repository.factory
+        factory_method: buildService
+        arguments: [@ezpublish.api.repository, User]
+        lazy: true
+
+    ezpublish.solrapi.service.search:
+        class: %ezpublish.solrapi.service.search.class%
+        factory_service: ezpublish.solrapi.repository.factory
+        factory_method: buildService
+        arguments: [@ezpublish.solrapi.repository, Search]
+        lazy: true
+
+    ezpublish.solrapi.service.section:
+        class: %ezpublish.solrapi.service.section.class%
+        factory_service: ezpublish.solrapi.repository.factory
+        factory_method: buildService
+        arguments: [@ezpublish.solrapi.repository, Section]
+        lazy: true
+
+    ezpublish.solrapi.service.trash:
+        class: %ezpublish.solrapi.service.trash.class%
+        factory_service: ezpublish.solrapi.repository.factory
+        factory_method: buildService
+        arguments: [@ezpublish.solrapi.repository, Trash]
+        lazy: true
+
+    ezpublish.solrapi.service.location:
+        class: %ezpublish.solrapi.service.location.class%
+        factory_service: ezpublish.solrapi.repository.factory
+        factory_method: buildService
+        arguments: [@ezpublish.solrapi.repository, Location]
+        lazy: false
+
+    # Signal Slot API wrapper
+    ezpublish.solrsignalslot.repository:
+        class: %ezpublish.solrsignalslot.repository.class%
+        arguments: [@ezpublish.solrapi.inner_repository, @ezpublish.solrsignalslot.signal_dispatcher]
+        lazy: false
+
+    ezpublish.solrsignalslot.signal_dispatcher:
+        class: %ezpublish.solrsignalslot.signal_dispatcher.class%

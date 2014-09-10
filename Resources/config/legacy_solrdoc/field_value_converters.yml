@@ -1,0 +1,38 @@
+parameters:
+    ezpublish.persistence.legacy_solrdoc.field_value_converter.registry.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\ConverterRegistry
+    ezpublish_solrdoc.fieldType.ezauthor.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Author
+    ezpublish_solrdoc.fieldType.ezbinaryfile.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\BinaryFile
+    ezpublish_solrdoc.fieldType.ezboolean.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Checkbox
+    ezpublish_solrdoc.fieldType.ezcountry.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Country
+    ezpublish_solrdoc.fieldType.ezdatetime.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\DateAndTime
+    ezpublish_solrdoc.fieldType.ezdate.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Date
+    ezpublish_solrdoc.fieldType.eztime.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Time
+    ezpublish_solrdoc.fieldType.ezemail.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\EmailAddress
+    ezpublish_solrdoc.fieldType.ezfloat.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Float
+    ezpublish_solrdoc.fieldType.ezgmaplocation.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\MapLocation
+    ezpublish_solrdoc.fieldType.ezinteger.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Integer
+    ezpublish_solrdoc.fieldType.ezimage.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Image
+    ezpublish_solrdoc.fieldType.ezisbn.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\ISBN
+    ezpublish_solrdoc.fieldType.ezkeyword.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Keyword
+    ezpublish_solrdoc.fieldType.ezmedia.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Media
+    ezpublish_solrdoc.fieldType.ezobjectrelation.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Relation
+    ezpublish_solrdoc.fieldType.ezobjectrelationlist.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\RelationList
+    ezpublish_solrdoc.fieldType.ezselection.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Selection
+    ezpublish.fieldType.ezstring.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\TextLine
+    ezpublish_solrdoc.fieldType.eztext.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\TextBlock
+    ezpublish_solrdoc.fieldType.ezrichtext.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\RichText
+    ezpublish_solrdoc.fieldType.ezxmltext.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\XmlText
+    ezpublish_solrdoc.fieldType.ezsrrating.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Rating
+    ezpublish_solrdoc.fieldType.ezurl.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Url
+    ezpublish_solrdoc.fieldType.ezuser.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Null
+    ezpublish_solrdoc.fieldType.ezpage.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Page
+    ezpublish_solrdoc.fieldType.eznull.converter.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Null
+
+services:
+    # Note: converter services tagged with 'ezpublish.storageEngine.legacy.converter' are
+    # registered to this one using compilation pass and factory
+    ezpublish.persistence.legacy_solrdoc.field_value_converter.registry:
+        class: %ezpublish.persistence.legacy.field_value_converter.registry.class%
+
+
+
