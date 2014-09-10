@@ -1,0 +1,4 @@
+EzPublishSolrDocsBundle
+=======================
+
+Hier Text einfügen!
