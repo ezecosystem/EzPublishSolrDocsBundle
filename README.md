@@ -1,4 +1,4 @@
 EzPublishSolrDocsBundle
 =======================
 
-Hier Text einfügen!
+php ezpublish/console xrow:solrdocs:testimport
