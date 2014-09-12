@@ -2,6 +2,8 @@ imports:
 - { resource: solrdocsconfig.yml }
 
 parameters:
+    xrow_ez_publish_solr_docs:
+        solrserverconfig: ~
     # API
     ezpublish.solrapi.repository.factory.class: eZ\Publish\Core\Base\Container\ApiLoader\RepositoryFactory
     ezpublish.solrapi.inner_repository.class: xrow\EzPublishSolrDocsBundle\Repository\Repository
