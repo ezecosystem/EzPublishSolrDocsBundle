@@ -20,7 +20,7 @@ parameters:
     ezpublish.solrapi.service.url_wildcard.class: eZ\Publish\Core\Repository\URLWildcardService
     ezpublish.solrapi.service.url_alias.class: eZ\Publish\Core\Repository\URLAliasService
     ezpublish.solrapi.service.user.class: eZ\Publish\Core\Repository\UserService
-    ezpublish.solrapi.service.search.class: eZ\Publish\Core\Repository\SearchService
+    ezpublish.solrapi.service.search.class: xrow\EzPublishSolrDocsBundle\Repository\SearchService
     ezpublish.solrapi.service.section.class: eZ\Publish\Core\Repository\SectionService
     ezpublish.solrapi.service.trash.class: eZ\Publish\Core\Repository\TrashService
     ezpublish.solrapi.service.location.class: xrow\EzPublishSolrDocsBundle\Repository\LocationService

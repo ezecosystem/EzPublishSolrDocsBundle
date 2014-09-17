@@ -1,3 +1,6 @@
 xrow_ez_publish_solr_docs_homepage:
     path:     /hello/{name}
     defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:index }
+xrow_ez_publish_solr_docs_showdoc:
+    path:     /solrdocview/{remoteid}
+    defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:solrDocView }
