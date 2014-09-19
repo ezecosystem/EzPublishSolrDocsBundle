@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    OData Atom Format Version 4.0
+    Committee Specification 02
+    17 November 2013
+    Copyright (c) OASIS Open 2013. All rights reserved.
+    Source: http://docs.oasis-open.org/odata/odata-atom-format/v4.0/cs02/schemas/
+-->
+<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:metadata="http://docs.oasis-open.org/odata/ns/metadata" xmlns:data="http://docs.oasis-open.org/odata/ns/data" xmlns:edm="http://docs.oasis-open.org/odata/ns/edm"
+  targetNamespace="http://docs.oasis-open.org/odata/ns/metadata"
+>
+  <xs:annotation>
+    <xs:documentation xml:lang="en">
+      Metadata for the OData Atom Format
+    </xs:documentation>
+  </xs:annotation>
+
+  <xs:import namespace="http://docs.oasis-open.org/odata/ns/edm" />
+  <xs:import namespace="http://www.w3.org/2005/Atom" />
+
+  <!-- markup for atom:entry -->
+  <xs:element name="properties">
+    <xs:complexType>
+      <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <!-- TODO: can we make this less generous, so that e.g. metadata:type and metadata:null attributes are validated? -->
+        <xs:any namespace="http://docs.oasis-open.org/odata/ns/data" processContents="lax" />
+        <xs:element ref="metadata:annotation" minOccurs="0" maxOccurs="unbounded" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:attribute name="etag" type="xs:string" />
+
+  <!-- markup for app:service, atom:entry and atom:feed -->
+  <xs:attribute name="context" type="xs:anyURI" />
+  <xs:attribute name="metadata-etag" type="xs:string" />
+
+  <!-- markup for atom:entry and atom:feed -->
+  <xs:element name="annotation">
+    <xs:complexType mixed="true">
+      <xs:group ref="metadata:GValue" minOccurs="0" maxOccurs="unbounded" />
+      <xs:attribute name="term" type="edm:TQualifiedName" use="required" />
+      <xs:attribute name="target" type="xs:string" use="optional" />
+      <xs:attribute ref="metadata:type" />
+      <xs:attribute ref="metadata:null" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="action">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="metadata:annotation" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="metadata" type="metadata:TActionFunctionMetadata" use="required" />
+      <xs:attribute name="title" type="xs:string" use="required" />
+      <xs:attribute name="target" type="xs:anyURI" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="function">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="metadata:annotation" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="metadata" type="metadata:TActionFunctionMetadata" use="required" />
+      <xs:attribute name="title" type="xs:string" use="required" />
+      <xs:attribute name="target" type="xs:anyURI" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="TActionFunctionMetadata">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="#[\p{L}\p{Nl}][\p{L}\p{Nl}\p{Nd}\p{Mn}\p{Mc}\p{Pc}\p{Cf}]{0,}(\.[\p{L}\p{Nl}][\p{L}\p{Nl}\p{Nd}\p{Mn}\p{Mc}\p{Pc}\p{Cf}]{0,}){1,}" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- markup for atom:feed -->
+  <xs:element name="count" type="metadata:TCount" />
+  <xs:complexType name="TCount">
+    <xs:simpleContent>
+      <xs:extension base="xs:nonNegativeInteger" />
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:element name="ref">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="metadata:annotation" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:anyURI" use="required" />
+      <xs:attribute ref="metadata:context" use="optional" />
+      <xs:attribute ref="metadata:type" use="optional" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="link">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="metadata:annotation" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="source" type="xs:anyURI" use="required" />
+      <xs:attribute name="relationship" type="edm:TSimpleIdentifier" use="required" />
+      <xs:attribute name="target" type="xs:anyURI" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="deleted-link">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="metadata:annotation" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="source" type="xs:anyURI" use="required" />
+      <xs:attribute name="relationship" type="edm:TSimpleIdentifier" use="required" />
+      <xs:attribute name="target" type="xs:anyURI" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <!-- markup for data:* -->
+  <xs:attribute name="type" type="metadata:TTypeName" />
+  <xs:attribute name="null" type="xs:boolean" />
+
+  <xs:simpleType name="TTypeName">
+    <xs:union memberTypes="xs:anyURI">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="Binary" />
+          <xs:enumeration value="Boolean" />
+          <xs:enumeration value="Byte" />
+          <xs:enumeration value="Date" />
+          <xs:enumeration value="DateTimeOffset" />
+          <xs:enumeration value="Duration" />
+          <xs:enumeration value="TimeOfDay" />
+          <xs:enumeration value="Decimal" />
+          <xs:enumeration value="Double" />
+          <xs:enumeration value="Single" />
+          <xs:enumeration value="GeographyPoint" />
+          <xs:enumeration value="GeographyLineString" />
+          <xs:enumeration value="GeographyPolygon" />
+          <xs:enumeration value="GeographyMultiPoint" />
+          <xs:enumeration value="GeographyMultiLineString" />
+          <xs:enumeration value="GeographyMultiPolygon" />
+          <xs:enumeration value="GeographyCollection" />
+          <xs:enumeration value="GeometryPoint" />
+          <xs:enumeration value="GeometryLineString" />
+          <xs:enumeration value="GeometryPolygon" />
+          <xs:enumeration value="GeometryMultiPoint" />
+          <xs:enumeration value="GeometryMultiLineString" />
+          <xs:enumeration value="GeometryMultiPolygon" />
+          <xs:enumeration value="GeometryCollection" />
+          <xs:enumeration value="Guid" />
+          <xs:enumeration value="Int16" />
+          <xs:enumeration value="Int32" />
+          <xs:enumeration value="Int64" />
+          <xs:enumeration value="SByte" />
+          <xs:enumeration value="String" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <!-- markup for atom:link -->
+  <xs:element name="inline">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="atom:feed" minOccurs="1" maxOccurs="1" />
+        <xs:element ref="atom:entry" minOccurs="1" maxOccurs="1" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- markup for atom-tombstone -->
+  <xs:attribute name="reason">
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="changed" />
+        <xs:enumeration value="deleted" />
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
+
+  <!-- markup for app:collection -->
+  <xs:attribute name="name" type="edm:TSimpleIdentifier" />
+
+  <xs:element name="singleton">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="atom:title" minOccurs="1" maxOccurs="1" />
+        <xs:element ref="metadata:annotation" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="href" type="xs:anyURI" use="required" />
+      <xs:attribute ref="metadata:name" use="optional" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="function-import">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="atom:title" minOccurs="1" maxOccurs="1" />
+        <xs:element ref="metadata:annotation" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="href" type="xs:anyURI" use="required" />
+      <xs:attribute ref="metadata:name" use="optional" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="service-document">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="atom:title" minOccurs="1" maxOccurs="1" />
+        <xs:element ref="metadata:annotation" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="href" type="xs:anyURI" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <!-- payload format for property value, action and function responses -->
+  <xs:element name="value">
+    <xs:complexType mixed="true">
+      <xs:group ref="metadata:GValue" minOccurs="0" maxOccurs="unbounded" />
+      <xs:attribute ref="metadata:type" />
+      <xs:attribute ref="metadata:context" use="required" />
+      <xs:attribute ref="metadata:metadata-etag" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:group name="GValue">
+    <xs:choice>
+      <xs:element ref="atom:link" />
+      <xs:any namespace="http://docs.oasis-open.org/odata/ns/data" processContents="lax" />
+      <xs:element ref="metadata:annotation" />
+      <xs:element name="element" type="metadata:TElement" minOccurs="0" maxOccurs="unbounded" />
+    </xs:choice>
+  </xs:group>
+
+  <xs:complexType name="TElement" mixed="true">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="atom:link" />
+      <xs:any namespace="http://docs.oasis-open.org/odata/ns/data" processContents="lax" />
+      <xs:element ref="metadata:annotation" />
+    </xs:choice>
+    <xs:attribute ref="metadata:type" use="optional" />
+    <xs:attribute ref="metadata:null" use="optional" />
+  </xs:complexType>
+
+  <!-- payload format for error responses -->
+  <xs:element name="error">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="code" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="message" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="target" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="details" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="detail" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="code" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="message" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="target" type="xs:string" minOccurs="0" maxOccurs="1" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="innererror" type="xs:anyType" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="metadata:annotation" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
