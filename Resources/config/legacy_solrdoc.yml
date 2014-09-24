@@ -38,7 +38,7 @@ services:
         class: %ezpublish.spi.persistence.legacy.class%
         arguments:
             - @ezpublish.spi.persistence.legacy.content.handler
-            - @ezpublish.spi.persistence.legacy_solr_own.search.handler.content
+            - @ezpublish.spi.persistence.legacy_solr.search.handler.content
             - @ezpublish.spi.persistence.legacy.content_type.handler
             - @ezpublish.spi.persistence.legacy.language.handler
             - @ezpublish.spi.persistence.legacy.location.handler
