@@ -33,8 +33,8 @@ services:
     # SOLRAPI
     ezpublish.solrapi.persistence_handler:
         #To disable cache, switch alias to ezpublish.api.storage_engine
-        alias: ezpublish.spi.persistence.cache
-        #alias: ezpublish.solrapi.storage_engine
+        #alias: ezpublish.spi.persistence.cache
+        alias: ezpublish.solrapi.storage_engine
 
     ezpublish.solrapi.storage_engine:
         #alias: ezpublish.spi.persistence.legacy

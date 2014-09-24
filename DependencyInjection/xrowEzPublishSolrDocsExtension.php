@@ -24,6 +24,7 @@ class xrowEzPublishSolrDocsExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+        $loader->load('legacy_solr_override.yml');
         $loader->load('legacy_solrdoc.yml');
         $loader->load('solrdocsconfig.yml');
         $solrserverconfig = $container->getParameter('xrow_ez_publish_solr_docs.solrserver');
