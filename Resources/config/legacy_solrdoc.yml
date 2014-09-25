@@ -7,7 +7,7 @@ imports:
     - {resource: legacy_solrdoc/location.yml}
     - {resource: legacy_solrdoc/object_state.yml}
 #    - {resource: legacy_solrdoc/search.yml}
-    - {resource: legacy_solrdoc/search_query_handlers.yml}
+#    - {resource: legacy_solrdoc/search_query_handlers.yml}
     - {resource: legacy_solrdoc/section.yml}
     - {resource: legacy_solrdoc/trash.yml}
     - {resource: legacy_solrdoc/url_alias.yml}
@@ -38,7 +38,7 @@ services:
         class: %ezpublish.spi.persistence.legacy.class%
         arguments:
             - @ezpublish.spi.persistence.legacy.content.handler
-            - @ezpublish.spi.persistence.legacy_solr.search.handler.content
+            - @ezpublish.spi.persistence.legacy_solrdoc.search.handler.content
             - @ezpublish.spi.persistence.legacy.content_type.handler
             - @ezpublish.spi.persistence.legacy.language.handler
             - @ezpublish.spi.persistence.legacy.location.handler
