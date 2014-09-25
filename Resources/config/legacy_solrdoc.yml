@@ -6,7 +6,7 @@ imports:
     - {resource: legacy_solrdoc/language.yml}
     - {resource: legacy_solrdoc/location.yml}
     - {resource: legacy_solrdoc/object_state.yml}
-    - {resource: legacy_solrdoc/search.yml}
+#    - {resource: legacy_solrdoc/search.yml}
     - {resource: legacy_solrdoc/search_query_handlers.yml}
     - {resource: legacy_solrdoc/section.yml}
     - {resource: legacy_solrdoc/trash.yml}
