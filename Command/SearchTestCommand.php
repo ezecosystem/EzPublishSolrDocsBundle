@@ -52,7 +52,7 @@ protected function execute( InputInterface $input, OutputInterface $output )
     $query->query = new Query\Criterion\FullText( "solr" );
     #$query->facetBuilders = new Facet\ContentTypeFacet(array("entries" => 10, "name" => "is_solrdoc_b"));
     $query->facetBuilders = array( new Query\FacetBuilder\ContentTypeFacetBuilder() );
-    var_dump(new Query\FacetBuilder\ContentTypeFacetBuilder());
+    #var_dump(new Query\FacetBuilder\ContentTypeFacetBuilder());
     $query->limit = 20;
     #$query->filter = new Query\Criterion\MatchAll("*" );
     #$query->filter =new Query\Criterion\ContentTypeIdentifier( 'folder' );

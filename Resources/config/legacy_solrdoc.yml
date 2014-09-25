@@ -20,7 +20,7 @@ parameters:
     ezpublish.api.storage_engine.legacy_solrdoc.dbhandler.class: eZ\Publish\Core\Persistence\Doctrine\ConnectionHandler
     ezpublish.persistence.solrconnection.class: Doctrine\DBAL\Driver\Connection
     ezpublish_solrdoc.persistence.slug_converter.class: eZ\Publish\Core\Persistence\Legacy\Content\UrlAlias\SlugConverter
-    ezpublish_solrdoc.persistence.external_storage_registry.class: EzSystems\SolrDocsBundle\Persistence\Legacysolrdoc\Content\StorageRegistry
+    ezpublish_solrdoc.persistence.external_storage_registry.class: eZ\Publish\Core\Persistence\Legacy\Content\StorageRegistry
     ezpublish_solrdoc.persistence.external_storage_registry.factory.class: eZ\Publish\Core\Base\Container\ApiLoader\Storage\ExternalStorageRegistryFactory
     ezpublish.persistence.legacy_solrdoc.field_value_converter.registry.class: eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\ConverterRegistry
     ezpublish.spi.persistence.legacy_solrdoc.transactionhandler.class: eZ\Publish\Core\Persistence\Legacy\TransactionHandler
@@ -51,7 +51,7 @@ services:
             - @ezpublish.spi.persistence.legacy.url_wildcard.handler
             - @ezpublish.spi.persistence.legacy.user.handler
         tags:
-            - {name: ezpublish.storageEngine, alias: legacy}
+            - {name: ezpublish.storageEngine, alias: legacy_solrdoc}
         lazy: false
 
     ezpublish.api.storage_engine.legacy_solrdoc.connection:

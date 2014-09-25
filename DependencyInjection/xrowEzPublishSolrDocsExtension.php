@@ -35,4 +35,16 @@ class xrowEzPublishSolrDocsExtension extends Extension
         $container->setParameter('xrow_ez_publish_solr_docs.solrglobalconfig', $solrClassesConfig);
         
     }
+    /*
+    public function build( ContainerBuilder $container )
+    {
+        parent::build( $container );
+        $container->addCompilerPass( new AggregateCriterionVisitorPass );
+        $container->addCompilerPass( new AggregateFacetBuilderVisitorPass );
+        $container->addCompilerPass( new AggregateFieldValueMapperPass );
+        $container->addCompilerPass( new AggregateSortClauseVisitorPass );
+        $container->addCompilerPass( new FieldRegistryPass );
+        $container->addCompilerPass( new SignalSlotPass );
+    }
+	*/
 }
