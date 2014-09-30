@@ -19,7 +19,7 @@ http://pragmatiqa.com/xodata/
 Testing XMLs
 
 ```sh
-php ezpublish/console xrow:odata:validate --source="http://services.odata.org/V4/OData/OData.svc/Products?$top=20&$format=atom"
+php ezpublish/console xrow:odata:validate --source="http://services.odata.org/V4/OData/OData.svc/Products?\$top=20&\$format=atom"
 ```
 or
 ```sh
