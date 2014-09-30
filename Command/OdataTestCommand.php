@@ -16,7 +16,7 @@ class OdataTestCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
      */
 protected function configure()
 {
-    $this->setName( 'xrow:solrdocs:odatatest' );
+    $this->setName( 'xrow:odata:validate' );
     $this->setDefinition(
         array(
             new InputOption( 'source', null, InputOption::VALUE_REQUIRED , 'Source of local document or http URL' )
@@ -28,8 +28,7 @@ protected function execute( InputInterface $input, OutputInterface $output )
 {
     $sourcefile = $input->getOption('source');
     $odatahelper = new ODataHelper();
-    #$validatexsd="vendor/xrow/ezpublish-solrdocs-bundle/Lib/edm.xsd";
-    $validatexsd="vendor/xrow/ezpublish-solrdocs-bundle/Lib/c1test.xsd";
+    $validatexsd="vendor/xrow/ezpublish-solrdocs-bundle/Lib/edm.xsd";
     try
     {
         $output->writeln( "" );
