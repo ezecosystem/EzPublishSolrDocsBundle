@@ -3,15 +3,22 @@ EzPublishSolrDocsBundle
 
 php ezpublish/console xrow:solrdocs:testimport
 
+Test services
+
+http://services.odata.org/V4/OData/OData.svc/
+
+Test Tool
+
+http://pragmatiqa.com/xodata/
 
 Testing XMLs
 
 ```sh
-php ezpublish/console xrow:solrdocs:odatatest --source="http://test.example.com/c1test.xml"
+php ezpublish/console xrow:odata:validate --source="http://test.example.com/c1test.xml"
 ```
 or
 ```sh
-php ezpublish/console xrow:solrdocs:odatatest --source="vendor/xrow/ezpublish-solrdocs-bundle/Lib/c1test.xml"
+php ezpublish/console xrow:odata:validate --source="vendor/xrow/ezpublish-solrdocs-bundle/Lib/c1test.xml"
 ```
 
 Add routes to ezpublish/config/routes.yml:
