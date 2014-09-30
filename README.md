@@ -6,12 +6,17 @@ php ezpublish/console xrow:solrdocs:testimport
 
 Testing XMLs
 
+```sh
 php ezpublish/console xrow:solrdocs:odatatest --source="http://test.example.com/c1test.xml"
+```
 or
+```sh
 php ezpublish/console xrow:solrdocs:odatatest --source="vendor/xrow/ezpublish-solrdocs-bundle/Lib/c1test.xml"
-
+```
 
 Add routes to ezpublish/config/routes.yml:
+
+```yaml
 xrow_ez_publish_solr_docs_homepage:
     path:     /solrdoc/{name}
     defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:index }
@@ -31,3 +36,4 @@ xrow_ez_publish_universalsearch_slash:
 xrow_ez_publish_universalsearch_withsearchtext:
     path:     /universalsearch/{searchtext}
     defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:solrDocUniversalSearch }
+```
