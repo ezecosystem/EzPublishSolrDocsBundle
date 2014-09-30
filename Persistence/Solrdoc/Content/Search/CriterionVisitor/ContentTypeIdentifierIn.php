@@ -71,7 +71,7 @@ class ContentTypeIdentifierIn extends CriterionVisitor
                 array_map(
                     function ( $value ) use ( $contentTypeHandler )
                     {
-                        return 'type_id:"' . $contentTypeHandler->loadByIdentifier( $value )->id . '"';
+                        return 'meta_contentclass_id_si:"' . $contentTypeHandler->loadByIdentifier( $value )->id . '"';
                     },
                     $criterion->value
                 )

@@ -1,11 +1,17 @@
 parameters:
     ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.content_type.class: xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Search\FacetBuilderVisitor\ContentType
+    ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.field.class: xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Search\FacetBuilderVisitor\Field
     ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.section.class: xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Search\FacetBuilderVisitor\Section
     ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.user.class: xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Search\FacetBuilderVisitor\User
 
 services:
     ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.content_type:
         class: %ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.content_type.class%
+        tags:
+            - {name: ezpublish.persistence.solrdoc.search.content.facet_builder_visitor}
+            
+    ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.field:
+        class: %ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.field.class%
         tags:
             - {name: ezpublish.persistence.solrdoc.search.content.facet_builder_visitor}
 

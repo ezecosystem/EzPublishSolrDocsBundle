@@ -2,11 +2,36 @@
 
 {% block content %}
 
-    <h1>{{ 'Search'|trans }}</h1>
+    <h1>SolrDoc Dokument</h1>
 
-    {% if result  %}
-        <h2>Dokument: </h2>
-
+    {% if result %}
+        {% if result.meta_class_identifier_ms is defined  %}
+            {% if result.meta_class_identifier_ms == "s_artikel"  %}
+            <h2>{{ result.meta_sort_name_ms }}</h2>
+            <p>
+            ObjectID: {{ result.meta_id_si }}<br />
+            ClassID: {{ result.meta_class_identifier_ms }}<br />
+            </p>
+                Vorspann:<br />
+                {{ result.attr_vorspann_t|raw }}
+                Haupttext:<br />
+                {{ result.attr_haupttext_t|raw }}
+            {% elseif result.meta_class_identifier_ms == "folder" %}
+                <h2>{{ result.meta_sort_name_ms }}</h2>
+                <p>
+                    ObjectID: {{ result.meta_id_si }}<br />
+                    ClassID: {{ result.meta_class_identifier_ms }}<br />
+                </p>
+                Short:<br />
+                {{ result.attr_short_description_t|raw }}<br /><br />
+                Description:<br />
+            {% else %}
+                Kann nicht dargestellt werden.
+            {% endif %}
+         {% else %}
+         
+            {{ dump(result)|raw }}
+         {% endif %}
     {% endif %}
 
 {% endblock %}

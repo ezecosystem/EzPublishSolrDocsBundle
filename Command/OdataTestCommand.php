@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use xrow\EzPublishSolrDocsBundle\Lib\ODataHelper;
 use DOMDocument;
 use DOMXPath;
+use Symfony\Component\Console\Input\InputOption;
  
 class OdataTestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -18,46 +19,48 @@ protected function configure()
     $this->setName( 'xrow:solrdocs:odatatest' );
     $this->setDefinition(
         array(
-            new InputArgument( 'name', InputArgument::OPTIONAL, 'An argument' )
+            new InputOption( 'source', null, InputOption::VALUE_REQUIRED , 'Source of local document or http URL' )
         )
     );
 }
 
 protected function execute( InputInterface $input, OutputInterface $output )
 {
+    $sourcefile = $input->getOption('source');
     $odatahelper = new ODataHelper();
-    #$client = new \Solarium\Client($this->getContainer()->getParameter('xrow_ez_publish_solr_docs.solrserverconfig'));
-    #$repository = $this->getContainer()->get( 'ezpublish.solrapi.repository' );
-    // Checking
-    
-    #http://docs.oasis-open.org/odata/odata/v4.0/os/schemas/edm.xsd
-    
-    #WORKING
-    #$inputxml="vendor/xrow/ezpublish-solrdocs-bundle/Lib/testxml.xml";
-    #$validatexsd="vendor/xrow/ezpublish-solrdocs-bundle/Lib/testxsd.xsd";
-    
-    #Trying
-    $inputxml="vendor/xrow/ezpublish-solrdocs-bundle/Lib/c1test.xml";
-    $validatexsd="vendor/xrow/ezpublish-solrdocs-bundle/Lib/c1test.xsd";
-    
-    #Ressources
-    #$validatexsd="vendor/xrow/ezpublish-solrdocs-bundle/Lib/edmx.xsd";
     #$validatexsd="vendor/xrow/ezpublish-solrdocs-bundle/Lib/edm.xsd";
-    #$validatexsd="vendor/xrow/ezpublish-solrdocs-bundle/Lib/odataatom.xsd";
-    
+    $validatexsd="vendor/xrow/ezpublish-solrdocs-bundle/Lib/c1test.xsd";
     try
     {
-    $output->writeln( "Going to validate XML against " . $validatexsd );
+        $output->writeln( "" );
+        $output->writeln( "Going to validate XML against " . $validatexsd );
+        $check = $odatahelper->validateAgainstXSD($sourcefile, $validatexsd);
     
-    if( $odatahelper->validateAgainstXSD($inputxml, $validatexsd) )
-    {
-        $output->writeln( "Document is valid against " . $validatexsd );
-    }
-    else
-    {
-        $output->writeln( "Document is NOT valid against " . $validatexsd );
-    }
-    $output->writeln( "Done." );
+        if( $check["status"] === true )
+        {
+            $output->writeln( "Document is valid against " . $validatexsd );
+        }
+        else
+        {
+            $output->writeln( "Document '" . $sourcefile . "' is NOT valid against " . $validatexsd );
+            $output->writeln( "Error(s): " );
+            foreach ($check["errors"] as $number => $error)
+            {
+                $output->writeln( "" );
+                $output->writeln( "Fehler #". ($number + 1) . ":" );
+                $output->writeln( "------------------------------------------------------" );
+                $output->writeln( "Message: " . $error->message );
+                $output->writeln( "File: " . $error->file);
+                $output->writeln( "Level: " . $error->level);
+                $output->writeln( "Zeile: " . $error->line);
+                $output->writeln( "Zeichen: " . $error->column);
+                $output->writeln( "Code: " . $error->code);
+            }
+        }
+        $output->writeln( "" );
+        $output->writeln( "" );
+        $output->writeln( "Fertig." );
+        $output->writeln( "" );
     }
     // Content type or location not found
     catch ( \eZ\Publish\API\Repository\Exceptions\NotFoundException $e )

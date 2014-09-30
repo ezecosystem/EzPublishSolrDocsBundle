@@ -1,0 +1,41 @@
+{% extends pagelayout %}
+
+{% block content %}
+
+    <h1>Universalsearch</h1>
+    <form name="uniform" method="post" action="/universalsearch">
+    <input type="text" value="{{ context }}" id="Search" name="SearchText" size="20" class="halfbox yui3-aclist-input" autocomplete="off"><br />
+    <input type="submit" value="Suche" name="SearchButton" class="button" ><br />
+    </form>
+    <br />
+    <hr />
+    Es wurden <b>{{ result.totalCount }}</b> Einträge für "{{ context|raw }}" gefunden in {{ result.time }} Sekunden.<br />
+    <hr />
+    {% if result %}
+        {% for facet_array in result.facets %}
+	       <b>Facetten-Art: {{ facet_array.name }}</b><br />
+            {% for facetid, facetcount in facet_array.entries %}
+                {{ facetid }}: {{ facetcount }} 
+	        &nbsp;&nbsp;
+	        {% endfor %}
+	        <br />
+	        <br />
+	    {% endfor %}
+        
+    {% endif %}
+    
+    <hr />
+    
+    <b>Ergebnisse:</b>
+<br />
+    {% if result %}
+        {% for document in result.searchHits %}
+	        {{ loop.index }} - <a href="/solrdocview/{{ document.valueObject.meta_remote_id_ms }}" target="_blank">{{ document.valueObject.meta_name_t }}</a>
+	        <br />
+	        <p>
+            </p>
+	    {% endfor %}
+        
+    {% endif %}
+
+{% endblock %}

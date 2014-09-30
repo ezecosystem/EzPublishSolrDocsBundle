@@ -1,6 +1,19 @@
 xrow_ez_publish_solr_docs_homepage:
-    path:     /hello/{name}
+    path:     /solrdoc/{name}
     defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:index }
+
 xrow_ez_publish_solr_docs_showdoc:
     path:     /solrdocview/{remoteid}
     defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:solrDocView }
+    
+xrow_ez_publish_universalsearch:
+    path:     /universalsearch
+    defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:solrDocUniversalSearch }
+    
+xrow_ez_publish_universalsearch_slash:
+    path:     /universalsearch/
+    defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:solrDocUniversalSearch }
+    
+xrow_ez_publish_universalsearch_withsearchtext:
+    path:     /universalsearch/{searchtext}
+    defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:solrDocUniversalSearch }

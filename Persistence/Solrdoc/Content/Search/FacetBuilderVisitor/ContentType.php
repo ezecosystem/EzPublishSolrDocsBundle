@@ -27,7 +27,7 @@ class ContentType extends FacetBuilderVisitor
      */
     public function canMap( $field )
     {
-        return $field === 'type_id';
+        return $field === 'meta_class_name_ms';
     }
 
     /**
@@ -42,7 +42,7 @@ class ContentType extends FacetBuilderVisitor
     {
         return new Facet\ContentTypeFacet(
             array(
-                'name'    => 'type',
+                'name'    => 'Class',
                 'entries' => $this->mapData( $data ),
             )
         );
@@ -70,12 +70,12 @@ class ContentType extends FacetBuilderVisitor
     public function visit( FacetBuilder $facetBuilder )
     {
         return http_build_query(
-            array(
-                'facet.field'             => 'type_id',
-                'f.type_id.facet.limit'    => $facetBuilder->limit,
-                'f.type_id.facet.mincount' => $facetBuilder->minCount,
-            )
-        );
+                    array(
+                        'facet.field'             => 'meta_class_name_ms',
+                        'f.meta_class_name_ms.facet.limit'    => $facetBuilder->limit,
+                        'f.meta_class_name_ms.facet.mincount' => $facetBuilder->minCount,
+                    )
+                );
     }
 }
 

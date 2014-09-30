@@ -159,6 +159,7 @@ class Native extends Gateway
             )
         );
         
+        /*
         var_dump(http_build_query( $parameters ) .
             ( count( $query->facetBuilders ) ? '&facet=true&facet.sort=count&' : '' ) .
             implode(
@@ -170,47 +171,85 @@ class Native extends Gateway
             )
         );
         
-
+*/
         // @todo: Error handling?
-        $data = json_decode( $response->body );
-
-        // @todo: Extract method
-        $result = new SearchResult(
-            array(
-                'time'       => $data->responseHeader->QTime / 1000,
-                'maxScore'   => $data->response->maxScore,
-                'totalCount' => $data->response->numFound,
-            )
-        );
-
-        foreach ( $data->response->docs as $doc )
+        if( $response->headers["status"] == 200 )
         {
-            /*
-            $searchHit = new SearchHit(
-                array(
-                    'score'       => $doc->score,
-                    'valueObject' => $this->contentHandler->load( $doc->id, $doc->version_id )
-                )
-            );
-            */
-            $searchHit = new SearchHit(
+            $data = json_decode( $response->body );
+            // @todo: Extract method
+            
+            $result = new SearchResult(
                     array(
-                            'score'       => $doc->score,
-                            'valueObject' => $doc
+                            'time'       => $data->responseHeader->QTime / 1000,
+                            'maxScore'   => $data->response->maxScore,
+                            'totalCount' => $data->response->numFound,
                     )
             );
-            $result->searchHits[] = $searchHit;
-        }
-
-        if ( isset( $data->facet_counts ) )
-        {
-            foreach ( $data->facet_counts->facet_fields as $field => $facet )
+            
+            foreach ( $data->response->docs as $doc )
             {
-                $result->facets[] = $this->facetBuilderVisitor->map( $field, $facet );
+                /*
+                 $searchHit = new SearchHit(
+                         array(
+                                 'score'       => $doc->score,
+                                 'valueObject' => $this->contentHandler->load( $doc->id, $doc->version_id )
+                         )
+                 );
+                */
+                if($doc->meta_id_si > 0 )
+                {
+                    /*
+                    $searchHit = new SearchHit(
+                            array(
+                                    'score'       => $doc->score,
+                                    'valueObject' => $this->contentHandler->load( $doc->meta_id_si, $doc->meta_current_version_si )
+                            )
+                    );
+                    */
+                    $searchHit = new SearchHit(
+                            array(
+                                    'score'       => $doc->score,
+                                    'valueObject' => $doc
+                            )
+                    );
+                }
+                else
+                {
+                    $searchHit = new SearchHit(
+                            array(
+                                    'score'       => $doc->score,
+                                    'valueObject' => $doc
+                            )
+                    );
+                }
+            
+                $result->searchHits[] = $searchHit;
             }
+            
+            
+            if ( isset( $data->facet_counts ) )
+            {
+                foreach ( $data->facet_counts->facet_fields as $field => $facet )
+                {
+                    $result->facets[] = $this->facetBuilderVisitor->map( $field, $facet );
+                }
+            }
+            
+            return $result;
         }
-
-        return $result;
+        else
+        {
+            $data = json_decode( $response->body );
+            
+            $result = new SearchResult(
+                    array(
+                            'time'       => 0,
+                            'maxScore'   => 0,
+                            'totalCount' => 0,
+                    )
+            );
+            return $result;
+        }
     }
 
     /**
