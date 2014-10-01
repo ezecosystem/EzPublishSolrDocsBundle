@@ -4,7 +4,7 @@ parameters:
         localhost:
           host: '127.0.0.1'
           port: 8983
-          path: '/solr/ezp-default'
+          path: '/solr/haz.de'
     xrow_ez_publish_solr_docs.solrglobalconfig:
       meta_installation_url_ms: "http://www.example.com/"
       meta_installation_id_ms: "6f700e7b8963e3abb508b9708f4529bc"

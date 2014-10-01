@@ -19,6 +19,7 @@
 	"ezsystems/ezpublish-spi": ">=5.3"
     },
     "autoload": {
-        "psr-4": { "xrow\\EzPublishSolrDocsBundle\\": ""}
+        "psr-4": { "xrow\\EzPublishSolrDocsBundle\\": ""},
+        "psr-4": { "xrow\\OData\\": "src/odata"}
     }
 }
