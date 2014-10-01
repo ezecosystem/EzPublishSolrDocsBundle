@@ -16,10 +16,12 @@
     "require": {
         "php": ">=5.3.0",
         "nelmio/solarium-bundle": "2.*",
-	"ezsystems/ezpublish-spi": ">=5.3"
+        "ezsystems/ezpublish-spi": ">=5.3"
     },
     "autoload": {
-        "psr-4": { "xrow\\EzPublishSolrDocsBundle\\": ""},
-        "psr-4": { "xrow\\OData\\": "src/odata"}
+        "psr-4": { 
+            "xrow\\OData\\": "src/OData",
+            "xrow\\EzPublishSolrDocsBundle\\": ""
+        }
     }
 }

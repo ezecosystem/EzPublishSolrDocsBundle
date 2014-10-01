@@ -36,14 +36,14 @@ class OdataTestCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         try {
             $output->writeln("Validating: $sourcefile");
             
-            $check = OData\ODataHelper::validate($sourcefile, $errors);
+            $check = OData\Helper::validate($sourcefile, $errors);
             
             if ($check) {
                 $output->writeln("Document is a valid ODATA source. ");
             } else {
                 $output->writeln("Document '" . $sourcefile . "' isn`t valid ODATA source ");
                 foreach ($errors as $error) {
-                    $output->writeln(OData\ODataHelper::LibXMLErrorToString($error));
+                    $output->writeln(OData\Helper::LibXMLErrorToString($error));
                 }
                 throw new \Exception( "Source is not valid." );
             }

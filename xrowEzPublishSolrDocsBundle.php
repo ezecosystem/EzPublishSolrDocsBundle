@@ -10,7 +10,6 @@ use xrow\EzPublishSolrDocsBundle\DependencyInjection\Compiler\AggregateFieldValu
 use xrow\EzPublishSolrDocsBundle\DependencyInjection\Compiler\AggregateSortClauseVisitorPass;
 use xrow\EzPublishSolrDocsBundle\DependencyInjection\Compiler\FieldRegistryPass;
 use xrow\EzPublishSolrDocsBundle\DependencyInjection\Compiler\SignalSlotPass;
-use xrow\EzPublishSolrDocsBundle\Lib\Globals;
 
 class xrowEzPublishSolrDocsBundle extends Bundle
 {
