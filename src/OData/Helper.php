@@ -4,9 +4,9 @@ namespace xrow\OData;
 use DOMDocument;
 use DOMXPath;
 
-class ODataHelper
+class Helper
 {
-    const SCHEMA = "vendor/xrow/ezpublish-solrdocs-bundle/Lib/atom-oasis.xsd";
+    const SCHEMA = "vendor/xrow/ezpublish-solrdocs-bundle/Resources/schema/atom-oasis.xsd";
     public static function validate($pathToInputxml, &$errors)
     {
         libxml_use_internal_errors(true);
