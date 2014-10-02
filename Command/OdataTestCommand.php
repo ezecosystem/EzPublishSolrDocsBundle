@@ -58,5 +58,12 @@ class OdataTestCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         catch (\eZ\Publish\API\Repository\Exceptions\ContentValidationException $e) {
             $output->writeln($e->getMessage());
         }
+        /*
+        $source = new OData\Source( $url);
+        $import = new Import\Process( $location, $contentType, $source );
+        if($import->validate()){
+            $import->import();
+        }
+        */
     }
 }
