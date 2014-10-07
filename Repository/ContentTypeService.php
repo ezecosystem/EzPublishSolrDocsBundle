@@ -51,7 +51,7 @@ use eZ\Publish\Core\Base\Exceptions\UnauthorizedException;
 use eZ\Publish\Core\FieldType\ValidationError;
 use DateTime;
 use Exception;
-use xrow\EzPublishSolrDocsBundle\Lib\Globals;
+use xrow\OData\Globals;
 
 /**
  * @example Examples/contenttype.php

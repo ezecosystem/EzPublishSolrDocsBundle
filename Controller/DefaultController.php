@@ -32,7 +32,7 @@ class DefaultController extends Controller
                 'pagelayout' => "eZDemoBundle::pagelayout.html.twig",
                 'route' => $request->get('_route'),
                 'context' => $remoteid,
-                'result' => $result,
+                'result' => (array)$result,
                 'current_locale' => "ger-DE"
         ), $response);
     }

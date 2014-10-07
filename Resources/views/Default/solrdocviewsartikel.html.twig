@@ -26,7 +26,26 @@
                 {{ result.attr_short_description_t|raw }}<br /><br />
                 Description:<br />
             {% else %}
-                Kann nicht dargestellt werden.
+                <h2>{{ result.meta_sort_name_ms }}</h2>
+                <p>
+                    ObjectID: {{ result.meta_id_si }}<br />
+                    ClassID: {{ result.meta_class_identifier_ms }}<br />
+                </p>
+                {% for attrib_id, attrib_value in result %}
+                 {% if attrib_id starts with 'attr_' %}
+                    {% if attrib_id ends with '___k' %}
+                        <b>{{ attrib_id }}:</b><br />
+                            {% for array_value in attrib_value %}
+                                {{ array_value|raw }}<br />
+                            {% endfor %}
+                            <br />
+                    {% else %}
+                        <b>{{ attrib_id }}:</b><br />
+                        {{ attrib_value|raw }}
+                        <br />
+                    {% endif %}
+                 {% endif %}
+                {% endfor %}
             {% endif %}
          {% else %}
          

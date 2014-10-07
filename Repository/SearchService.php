@@ -23,7 +23,7 @@ use eZ\Publish\Core\Base\Exceptions\NotFoundException;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
 use eZ\Publish\SPI\Persistence\Content\Search\Handler;
 use eZ\Publish\SPI\Persistence\Content\Location\Search\Handler as LocationSearchHandler;
-use xrow\EzPublishSolrDocsBundle\Lib\Globals;
+use xrow\OData\Globals;
 
 /**
  * Search service

@@ -1,6 +1,6 @@
 <?php
 
-namespace xrow\EzPublishSolrDocsBundle\Lib;
+namespace xrow\OData;
  
 class Globals
 {

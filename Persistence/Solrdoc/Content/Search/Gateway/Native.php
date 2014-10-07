@@ -147,7 +147,7 @@ class Native extends Gateway
         // @todo: Extract method
         $response = $this->client->request(
             'GET',
-            '/solr/haz.de/select?' .
+            '/solr/ezp-default/select?' .
             http_build_query( $parameters ) .
             ( count( $query->facetBuilders ) ? '&facet=true&facet.sort=count&' : '' ) .
             implode(

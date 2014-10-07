@@ -46,7 +46,7 @@ use Exception;
 use eZ\Publish\Core\Repository\Values\Content\Content;
 use Solarium\Core\Client\Client;
 use DateTime;
-use xrow\EzPublishSolrDocsBundle\Lib\Globals;
+use xrow\OData\Globals;
 
 /**
  * This class provides service methods for managing content
