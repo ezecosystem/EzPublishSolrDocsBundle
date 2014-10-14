@@ -1,0 +1,18 @@
+<div>
+<h3><a href="/solrdocview/{{ item.meta_remote_id_ms }}" target="_blank">{{ index }}. {{ item.meta_name_t }}</a> (Marktplatz)</h3>
+<p>Score: {{ item.score }}</p>
+<div style="float: left; width: 180px;">
+</div>
+
+Rubrik: <b>{{ item. attr_rubrik_s }}</b><br />
+Erschienen: <b>{{ item. attr_erschienen_dt }}</b><br />
+<p>
+{{ item.attr_haupttext_t|length > 250 ? item.attr_haupttext_t|slice(0, 250) ~ '...' : item.attr_haupttext_t  }}
+</p>
+{% if ( highlight is defined ) and  ( highlight != "" ) %}
+<p>Gefunden: <i>{{ highlight|raw }}</i></p>
+{% endif %}
+
+</div>
+
+<div style="clear:both;"></div>

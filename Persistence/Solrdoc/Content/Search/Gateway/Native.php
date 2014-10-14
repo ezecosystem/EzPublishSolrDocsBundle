@@ -156,22 +156,9 @@ class Native extends Gateway
                     array( $this->facetBuilderVisitor, 'visit' ),
                     $query->facetBuilders
                 )
-            )
+            )."&hl=true&hl.fl=ezf_df_text&hl.simple.pre=<b>&hl.simple.post=<%2Fb>"
         );
         
-        /*
-        var_dump(http_build_query( $parameters ) .
-            ( count( $query->facetBuilders ) ? '&facet=true&facet.sort=count&' : '' ) .
-            implode(
-                '&',
-                array_map(
-                    array( $this->facetBuilderVisitor, 'visit' ),
-                    $query->facetBuilders
-                )
-            )
-        );
-        
-*/
         // @todo: Error handling?
         if( $response->headers["status"] == 200 )
         {
@@ -185,6 +172,17 @@ class Native extends Gateway
                             'totalCount' => $data->response->numFound,
                     )
             );
+            $highlight_array = array();
+            if ( isset( $data->highlighting ) )
+            {
+                foreach ( $data->highlighting as $h_remoteid => $highlight )
+                {
+                    foreach( $highlight as $highlight_item )
+                    {
+                        $highlight_array[$h_remoteid] = $highlight_item;
+                    }
+                }
+            }
             
             foreach ( $data->response->docs as $doc )
             {
@@ -196,6 +194,14 @@ class Native extends Gateway
                          )
                  );
                 */
+                $highlight_toID = "";
+                if( array_key_exists($doc->meta_guid_ms, $highlight_array) )
+                {
+                    if( count($highlight_array[$doc->meta_guid_ms]) > 0  )
+                    {
+                        $highlight_toID = $highlight_array[$doc->meta_guid_ms][0];
+                    }
+                }
                 if($doc->meta_id_si > 0 )
                 {
                     /*
@@ -209,7 +215,8 @@ class Native extends Gateway
                     $searchHit = new SearchHit(
                             array(
                                     'score'       => $doc->score,
-                                    'valueObject' => $doc
+                                    'valueObject' => $doc,
+                                    'highlight' => $highlight_toID
                             )
                     );
                 }
@@ -218,7 +225,8 @@ class Native extends Gateway
                     $searchHit = new SearchHit(
                             array(
                                     'score'       => $doc->score,
-                                    'valueObject' => $doc
+                                    'valueObject' => $doc,
+                                    'highlight' => $highlight_toID
                             )
                     );
                 }
@@ -234,6 +242,7 @@ class Native extends Gateway
                     $result->facets[] = $this->facetBuilderVisitor->map( $field, $facet );
                 }
             }
+            
             
             return $result;
         }

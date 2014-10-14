@@ -8,18 +8,30 @@
     <input type="submit" value="Suche" name="SearchButton" class="button" ><br />
     </form>
     <br />
+
+    {% for allfacet_array in allfacets.facets %}
+	       {% if allfacet_array.name == "Klassen" %}
+	           <a href="/universalsearch/{{ context }}">Alle ({{ allfacets.totalCount }})</a> &nbsp;&nbsp;
+            {% for facetid, facetcount in allfacet_array.entries %}
+                <a href="/universalsearch/{{ context }}?class_filter={{ facetid }}">{{ facetid }} ({{ facetcount }})</a> &nbsp;&nbsp; 
+	        {% endfor %}
+           {%endif%}
+	    {% endfor %}
     <hr />
+    
     Es wurden <b>{{ result.totalCount }}</b> Einträge für "{{ context|raw }}" gefunden in {{ result.time }} Sekunden.<br />
     <hr />
     {% if result %}
         {% for facet_array in result.facets %}
-	       <b>Facetten-Art: {{ facet_array.name }}</b><br />
+        {% if facet_array.name != "Klassen" %}
+	       <b>{{ facet_array.name }}</b><br />
             {% for facetid, facetcount in facet_array.entries %}
-                {{ facetid }}: {{ facetcount }} 
+                <i>{{ facetid }}:</i> {{ facetcount }} 
 	        &nbsp;&nbsp;
 	        {% endfor %}
 	        <br />
 	        <br />
+	        {% endif %}
 	    {% endfor %}
         
     {% endif %}
@@ -30,10 +42,33 @@
 <br />
     {% if result %}
         {% for document in result.searchHits %}
-	        {{ loop.index }} - <a href="/solrdocview/{{ document.valueObject.meta_remote_id_ms }}" target="_blank">{{ document.valueObject.meta_name_t }}</a>
+        {% if document.valueObject.meta_class_identifier_ms starts with 's_auto' %}
+        {{ include(
+            'xrowEzPublishSolrDocsBundle:Default:Line/s_auto.html.twig',
+            { 'item': document.valueObject, 'index': loop.index, 'highlight': document.highlight}
+        ) }}
+        {% elseif document.valueObject.meta_class_identifier_ms starts with 's_video' %}
+        {{ include(
+            'xrowEzPublishSolrDocsBundle:Default:Line/s_video.html.twig',
+            { 'item': document.valueObject, 'index': loop.index, 'highlight': document.highlight }
+        ) }}
+        {% elseif document.valueObject.meta_class_identifier_ms starts with 's_marktplatz' %}
+        {{ include(
+            'xrowEzPublishSolrDocsBundle:Default:Line/s_marktplatz.html.twig',
+            { 'item': document.valueObject, 'index': loop.index, 'highlight': document.highlight }
+        ) }}
+        {% elseif document.valueObject.meta_class_identifier_ms starts with 's_branchenbuch' %}
+        {{ include(
+            'xrowEzPublishSolrDocsBundle:Default:Line/s_branchenbuch.html.twig',
+            { 'item': document.valueObject, 'index': loop.index, 'highlight': document.highlight }
+        ) }}
+        {% else %}
+            {{ loop.index }} - <a href="/solrdocview/{{ document.valueObject.meta_remote_id_ms }}" target="_blank">{{ document.valueObject.meta_name_t }}</a>({{ document.valueObject.meta_class_identifier_ms }}) - {{ document.valueObject.timestamp }}
 	        <br />
 	        <p>
             </p>
+        {% endif %}
+	        <hr />
 	    {% endfor %}
         
     {% endif %}

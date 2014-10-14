@@ -25,6 +25,22 @@ or
 ```sh
 php ezpublish/console xrow:odata:validate --source="vendor/xrow/ezpublish-solrdocs-bundle/Lib/c1test.xml"
 ```
+or
+```sh
+php ezpublish/console xrow:odata:import --source="<linkToSource>" --class="s_branchenbuch" --offset=0 --limit=1000
+```
+or
+```sh
+php ezpublish/console xrow:odata:import --source="<linkToSource>" --class="s_veranstaltung" --offset=0 --limit=1000
+```
+or
+```sh
+php ezpublish/console xrow:odata:import --source="<linkToSource>" --class="s_marktplatz" --offset=0 --limit=1000
+```
+or
+```sh
+php ezpublish/console xrow:odata:import --source="<linkToSource>" --class="s_auto" --offset=0 --limit=1000
+```
 
 Add routes to ezpublish/config/routes.yml:
 
@@ -48,4 +64,8 @@ xrow_ez_publish_universalsearch_slash:
 xrow_ez_publish_universalsearch_withsearchtext:
     path:     /universalsearch/{searchtext}
     defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:solrDocUniversalSearch }
+    
+xrow_ez_publish_universalsearch_ajax:
+    path:     /universalsearch_ajax
+    defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:solrDocUniversalSearchAjax }
 ```

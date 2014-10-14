@@ -48,7 +48,7 @@ protected function execute( InputInterface $input, OutputInterface $output )
         $haupttext = "<p>Hier lebte die Bärenfamilie..</p>";
         $schlagwoerter = array("Bär", "Wald");
         $rubriken = array( "News", "Winter");
-        $url = "http://www.haz.de/Nachrichten/Lokales/Hannover";
+        $url = "http://www.halligalli.de/Nachrichten/Lokales/";
         $contentCreateStruct->setField( 'titel', $titel );
         $contentCreateStruct->setField( 'veroeffentlichungsdatum', $veroeffentlichungsdatum );
         $contentCreateStruct->setField( 'vorspann', $vorspann );

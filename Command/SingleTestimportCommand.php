@@ -49,7 +49,7 @@ Dieser Artikel hat einen relativ <b>kurzen</b> Haupttext.
 </p>";
         $schlagwoerter = array("Solr", "neuer Artikel", "Gewitter");
         $rubriken = array( "Nachrichten", "Meinung");
-        $url = "http://www.haz.de/Nachrichten/Lokales/Hannover";
+        $url = "http://www.test.de/Nachrichten/Lokales/Hannover";
         $contentCreateStruct->setField( 'titel', $titel );
         $contentCreateStruct->setField( 'veroeffentlichungsdatum', $veroeffentlichungsdatum );
         $contentCreateStruct->setField( 'vorspann', $vorspann );

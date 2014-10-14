@@ -1,0 +1,30 @@
+{% extends pagelayout %}
+
+{% block content %}
+
+    <h1>Universalsearch</h1>
+    <form name="uniform" method="post" action="/universalsearch">
+    <input type="text" value="{{ context }}" id="Search" name="SearchText" size="20" class="halfbox yui3-aclist-input" autocomplete="off">
+    <br />
+    <input type="submit" value="Suche" name="SearchButton" class="button" ><br />
+    </form>
+    <br />
+
+    {% block jquery %} 
+    <script>
+        $(function(){
+            $.ajax({
+                type: "POST",
+                url: "/universalsearch_ajax",
+                dataType: 'json',
+                success: function(msg){
+                    $("#searchResultAjax").html( msg.message );
+                }
+            })
+        });
+    </script>
+<div id="searchResultAjax">Init</div>
+{% endblock %} 
+    
+
+{% endblock %}

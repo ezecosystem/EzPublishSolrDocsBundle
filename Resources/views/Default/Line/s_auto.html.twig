@@ -1,0 +1,21 @@
+<div>
+<h3><a href="/solrdocview/{{ item.meta_remote_id_ms }}" target="_blank">{{ index }}. {{ item.meta_name_t }}</a> (Autoanzeige)</h3>
+<p>Score: {{ item.score }}</p>
+<div style="float: left; width: 180px;">
+{% if item.attr_bild_s is defined %}
+<img src="{{ item.attr_bild_s }}" /><br />
+{% endif %}
+</div>
+
+Preis: <b>{{ item.attr_preis_s }} €</b><br />
+Einstellungsdatum: <b>{{ item.timestamp }}</b><br />
+<p>
+{{ item.attr_haupttext_t|length > 250 ? item.attr_haupttext_t|slice(0, 250) ~ '...' : item.attr_haupttext_t  }}
+</p>
+{% if ( highlight is defined ) and  ( highlight != "" ) %}
+<p>Gefunden: <i>{{ highlight|raw }}</i></p>
+{% endif %}
+
+</div>
+
+<div style="clear:both;"></div>

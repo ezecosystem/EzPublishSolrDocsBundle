@@ -62,6 +62,9 @@ class FullText extends CriterionVisitor
         $queries = array(
             "text:" . $criterion->value,
         );
+        $queries = array(
+                "" . $criterion->value,
+        );
 
         foreach ( $criterion->boost as $field => $boost )
         {

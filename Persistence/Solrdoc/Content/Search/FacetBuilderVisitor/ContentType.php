@@ -69,9 +69,20 @@ class ContentType extends FacetBuilderVisitor
      */
     public function visit( FacetBuilder $facetBuilder )
     {
+        $fieldpath="meta_class_name_ms";
+        if( $facetBuilder->name != "" )
+        {
+            $facetname="{!ex=dt key=" . $facetBuilder->name . "}" . $fieldpath;
+        }
+        else
+        {
+            $facetname=$fieldpath;
+        }
+
+        
         return http_build_query(
                     array(
-                        'facet.field'             => 'meta_class_name_ms',
+                        'facet.field'             => $facetname,
                         'f.meta_class_name_ms.facet.limit'    => $facetBuilder->limit,
                         'f.meta_class_name_ms.facet.mincount' => $facetBuilder->minCount,
                     )

@@ -1253,15 +1253,15 @@ parameters:
                   isRequired: true
                   isInfoCollector: false
                   isSearchable: true
-        s_auto2:
+        s_auto3:
             names:
                 'ger-DE': "SolrAutoAngepasst"
             descriptions:
                 'ger-DE': ""
             contentTypeGroups:
-            id: 1008
+            id: 10083
             status: 0
-            identifier: "s_auto2"
+            identifier: "s_auto3"
             creationDate: 1410259460
             modificationDate: 1410259460
             creatorId: 14
@@ -1286,7 +1286,7 @@ parameters:
                   fieldGroup : ""
                   position : 1
                   isTranslatable: false
-                  isRequired: true
+                  isRequired: false
                   isInfoCollector: false
                   isSearchable: true
               titel:
@@ -1314,7 +1314,7 @@ parameters:
                   fieldGroup : ""
                   position : 3
                   isTranslatable: false
-                  isRequired: true
+                  isRequired: false
                   isInfoCollector: false
                   isSearchable: true
               rubriken:
@@ -1532,7 +1532,7 @@ parameters:
                   fieldGroup : ""
                   position : 3
                   isTranslatable: false
-                  isRequired: true
+                  isRequired: false
                   isInfoCollector: false
                   isSearchable: true
               kategorie:

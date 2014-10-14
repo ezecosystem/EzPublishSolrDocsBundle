@@ -55,7 +55,7 @@ protected function execute( InputInterface $input, OutputInterface $output )
     $update->addDeleteQuery('*:*');
     $update->addCommit();
     $result = $client->update($update);
-    
+    #die("alles is weck");
     $output->writeln( "Time until solr cleaned:" . $this->getTimingToNow( "start" ) );
 
     /** @var $repository \eZ\Publish\API\Repository\Repository */
@@ -98,7 +98,7 @@ Dieser Artikel hat einen relativ <b>kurzen</b> Haupttext.
 </p>";
         $schlagwoerter = array("Solr", "neuer Artikel", "Gewitter");
         $rubriken = array( "Nachrichten", "Meinung");
-        $url = "http://www.haz.de/Nachrichten/Lokales/Hannover";
+        $url = "http://www.test.de/Nachrichten/Lokales/Hannover";
         
         
         $contentCreateStruct->setField( 'titel', $titel );

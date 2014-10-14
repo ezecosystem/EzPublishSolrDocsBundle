@@ -43,7 +43,7 @@ class Field extends FacetBuilderVisitor
     {
         return new Facet\ContentTypeFacet(
             array(
-                'name'    => 'Attribute',
+                'name'    => $field,
                 'entries' => $this->mapData( $data ),
             )
         );
@@ -71,11 +71,20 @@ class Field extends FacetBuilderVisitor
     public function visit( FacetBuilder $facetBuilder )
     {
         $fieldpath=$facetBuilder->fieldPaths;
+        if( $facetBuilder->name != "" )
+        {
+            $facetname="{!ex=dt key=" . $facetBuilder->name . "}" . $facetBuilder->fieldPaths;
+        }
+        else
+        {
+            $facetname=$facetBuilder->fieldPaths;
+        }
+
         return http_build_query(
                     array(
-                        'facet.field'                        => $fieldpath,
+                        'facet.field'                        => $facetname,
                         'f.' . $fieldpath . '.facet.limit'   => $facetBuilder->limit,
-                        'f.' . $fieldpath . 'facet.mincount' => $facetBuilder->minCount,
+                        'f.' . $fieldpath . '.facet.mincount' => $facetBuilder->minCount,
                     )
                 );
     }
