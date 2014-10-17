@@ -83,7 +83,7 @@ We decided that it is neccary to abstarct the Import in the most simple way.
 ```php
 $source = new OData\Source( $url );
 $import = new Import\Process( $location, $contentType, $source );
-if($import->validate()){
+if( $import->validate() ){
     $import->import();
 }
 ```
