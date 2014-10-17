@@ -69,3 +69,23 @@ xrow_ez_publish_universalsearch_ajax:
     path:     /universalsearch_ajax
     defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:solrDocUniversalSearchAjax }
 ```
+
+Components of this Bundle
+
+* SOLR Storage Handler
+* Import API
+* Standard Import Scripts for formats like OData 4.0
+
+The Import Model
+
+We decided that it is neccary to abstarct the Import in the most simple way.
+
+```php
+$source = new OData\Source( $url );
+$import = new Import\Process( $location, $contentType, $source );
+if($import->validate()){
+    $import->import();
+}
+```
+
+A new Source is defined to implement Iterator, Countable, Sourceable to get properly imported though the Importer.
