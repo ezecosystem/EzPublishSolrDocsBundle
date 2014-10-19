@@ -27,6 +27,12 @@ class xrowEzPublishSolrDocsExtension extends Extension
         $loader->load('legacy_solr_override.yml');
         $loader->load('legacy_solrdoc.yml');
         $loader->load('solrdocsconfig.yml');
+        $loader->load('solrdocsconfig.yml');
+        if( file_exists(__DIR__.'/../../../../ezpublish/config/solrdocsconfig.yml') )
+        {
+            $loader_solrdocs = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../../../../ezpublish/config'));
+            $loader_solrdocs->load('solrdocsconfig.yml');
+        }
         $solrserverconfig = $container->getParameter('xrow_ez_publish_solr_docs.solrserver');
         $solrclasses = $container->getParameter('xrow_ez_publish_solr_docs.solr_classes');
         $solrClassesConfig = $container->getParameter('xrow_ez_publish_solr_docs.solrglobalconfig');

@@ -43,4 +43,9 @@ abstract class ImportSource implements Iterator, Countable, Sourceable
     {
         return count( $this->_entries );
     }
+    
+    public function validateImport( $linktoxml )
+    {
+        return true;
+    }
 }

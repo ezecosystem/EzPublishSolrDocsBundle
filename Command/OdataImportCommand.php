@@ -30,8 +30,8 @@ class OdataImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     /**
      * Executes the command
      * 
-     * @param InputInterface $input            
-     * @param OutputInterface $output            
+     * @param InputInterface $input
+     * @param OutputInterface $output
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -48,6 +48,7 @@ class OdataImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             
             // PREPARING
             $repository = $this->getContainer()->get( 'ezpublish.solrapi.repository' );
+            $repository->setCurrentUser( $repository->getUserService()->loadUser( 14 ) );
             $contentTypeService = $repository->getContentTypeService();
             $locationService = $repository->getLocationService();
             $parentLocationId = 2;
@@ -78,7 +79,7 @@ class OdataImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             $output->writeln("---------------");
             $output->writeln("");
             
-            if($import->validate( $source ))
+            if($import->validate( $sourcefile ))
             {
                 $output->writeln("Import is valid.");
                 $output->writeln("Rows: " . $source->count());

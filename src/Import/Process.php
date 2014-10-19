@@ -19,17 +19,26 @@ class Process implements Importing
         $this->i_repository = $repository;
 
     }
-    function validate( )
+    function validate( $linktoxml )
     {
-        return true;
+        return $this->source->validateImport( $linktoxml );
+        #return true;
     }
     
     function import( ) {
         #$this->stopReplication();
+        $importstartzeit=microtime(true);
         foreach( $this->source as $entry )
         {
             $this->importEntry( $entry );
         }
+        $durationInMilliseconds = (microtime(true) - $importstartzeit) * 1000;
+        $timing = number_format($durationInMilliseconds, 3, '.', '') . "ms";
+        if($durationInMilliseconds > 1000)
+        {
+            $timing = number_format($durationInMilliseconds / 1000, 1, '.', '') . "sec";
+        }
+        echo "\nDauer Import: " . $timing . "\n";
         #$this->startReplication();
     }
     
@@ -37,7 +46,7 @@ class Process implements Importing
     {
         $repository = $this->i_repository;
         $contentService = $repository->getContentService();
-        $repository->setCurrentUser( $repository->getUserService()->loadUser( 14 ) );
+        #$repository->setCurrentUser( $repository->getUserService()->loadUser( 14 ) );
         $contentCreateStruct = $contentService->newContentCreateStruct( $this->ContentType, 'ger-DE' );
         $contentCreateStruct_mapped = self::mapClass($entry, $contentCreateStruct);
         $draft = $contentService->createContent( $contentCreateStruct_mapped, array( $this->location ) );

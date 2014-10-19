@@ -8,7 +8,7 @@ interface Importing
 {
     public function __construct( $location, $ContentType, ImportSource $source, $repository );
     public function import(  );
-    public function validate(  );
+    public function validate( $linktoxml );
     public function mapClass( $entry, $contentCreateStruct);
     
 }
