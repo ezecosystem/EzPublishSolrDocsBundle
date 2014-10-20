@@ -286,7 +286,7 @@ class ContentService implements ContentServiceInterface
      *
      * @return \eZ\Publish\API\Repository\Values\Content\Content
      */
-    public function loadContentByContentInfo( ContentInfo $contentInfo, array $languages = null, $versionNo = null )
+    public function loadContentByContentInfo( ContentInfo $contentInfo, array $languages = null, $versionNo = null, $useAlwaysAvailable = false )
     {
         #die("lksjfContentInfo");
         return $this->loadContent(
@@ -306,7 +306,7 @@ class ContentService implements ContentServiceInterface
      *
      * @return \eZ\Publish\API\Repository\Values\Content\Content
      */
-    public function loadContentByVersionInfo( APIVersionInfo $versionInfo, array $languages = null )
+    public function loadContentByVersionInfo( APIVersionInfo $versionInfo, array $languages = null, $useAlwaysAvailable = false )
     {
         #die("lksjfContentInfo");
         return $this->loadContent(
@@ -330,7 +330,7 @@ class ContentService implements ContentServiceInterface
      *
      * @return \eZ\Publish\API\Repository\Values\Content\Content
      */
-    public function loadContent( $contentId, array $languages = null, $versionNo = null )
+    public function loadContent( $contentId, array $languages = null, $versionNo = null, $useAlwaysAvailable = false )
     {
         $content = $this->internalLoadContent( $contentId, $languages, $versionNo );
 
@@ -418,7 +418,7 @@ class ContentService implements ContentServiceInterface
      *
      * @return \eZ\Publish\API\Repository\Values\Content\Content
      */
-    public function loadContentByRemoteId( $remoteId, array $languages = null, $versionNo = null )
+    public function loadContentByRemoteId( $remoteId, array $languages = null, $versionNo = null, $useAlwaysAvailable = false )
     {
         $content = $this->internalLoadContent( $remoteId, $languages, $versionNo, true );
 
