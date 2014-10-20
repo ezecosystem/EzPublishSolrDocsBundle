@@ -255,11 +255,17 @@ class DomainMapper
         if ( $spiLocation->id == 1 )
             $contentInfo = new ContentInfo(
                 array(
-                    'id' => 0,
-                    'name' => 'Top Level Nodes',
+                    'id' => 57,
+                    'name' => 'Home',
                     'sectionId' => 1,
                     'mainLocationId' => 1,
+                    'currentVersionNo' => 1,
                     'contentTypeId' => 1,
+                    'published' => true,
+                        'ownerId' => 14,
+                        'alwaysAvailable' => true,
+                        'remoteId' => "8a9c9c761004866fb458d89910f52bee",
+                        'mainLanguageCode' => "ger-DE",
                 )
             );
         else
