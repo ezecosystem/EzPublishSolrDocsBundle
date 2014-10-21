@@ -66,7 +66,17 @@ class OdataImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             {
                 $limit=$limitopt;
             }
-            $source = new OData\Source( $sourcefile, $offset, $limit);
+            
+            try
+            {
+                $source = new OData\Source( $sourcefile, $offset, $limit);
+            }
+            catch (\Exception $e)
+            {
+                $output->writeln("Error: " . $e->getMessage());
+                $output->writeln("Import stops here.");
+                exit();
+            }
             
             $output->writeln("Sourced " . $sourcefile);
             $output->writeln("---------------");
@@ -81,8 +91,7 @@ class OdataImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             
             if($import->validate( $sourcefile ))
             {
-                $output->writeln("Import is valid.");
-                $output->writeln("Rows: " . $source->count());
+                $output->writeln("Rows in total: " . $source->count());
                 $import->import($source);
             }
             else

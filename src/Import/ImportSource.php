@@ -10,8 +10,12 @@ abstract class ImportSource implements Iterator, Countable, Sourceable
 {
     protected $_iterations;
     protected $_entries;
+    protected $_feed;
+    protected $_feedurl;
     protected $title;
     protected $id;
+    protected $_offset;
+    protected $_limit;
     
     public function __construct($entries)
     {
@@ -20,11 +24,15 @@ abstract class ImportSource implements Iterator, Countable, Sourceable
     
     public function current()
     {
-        return $this->_entries[$this->_iterations];
+        return $this->_entries->item($this->_iterations);
     }
     public function key ()
     {
         return $this->_iterations;
+    }
+    public function toKey ( $_iteration )
+    {
+        return $this->_iterations = $_iteration;
     }
     public function next ()
     {
@@ -41,11 +49,31 @@ abstract class ImportSource implements Iterator, Countable, Sourceable
     
     public function count()
     {
-        return count( $this->_entries );
+        return $this->_entries->length;
     }
     
-    public function validateImport( $linktoxml )
+    public function validateImport( )
     {
         return true;
+    }
+    
+    public function setOffset ( $offset )
+    {
+        return $this->_offset = $offset;
+    }
+    
+    public function setLimit ( $limit )
+    {
+        return $this->_limit = $limit;
+    }
+    
+    public function offset ( )
+    {
+        return $this->_offset;
+    }
+    
+    public function limit ( )
+    {
+        return $this->_limit;
     }
 }

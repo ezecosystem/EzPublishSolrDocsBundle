@@ -12,6 +12,22 @@ class Helper
         libxml_use_internal_errors(true);
         $dom = new DOMDocument();
         $dom->load($pathToInputxml);
+        // Hier multiple XSD rein bauen
+        #$dom->xinclude();
+        $errors = array();
+        if (! $dom->schemaValidate(self::SCHEMA)) {
+            $errors = libxml_get_errors();
+            libxml_clear_errors();
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    public static function validateDom( $dom, &$errors)
+    {
+        libxml_use_internal_errors(true);
+        // Hier multiple XSD rein bauen
         #$dom->xinclude();
         $errors = array();
         if (! $dom->schemaValidate(self::SCHEMA)) {

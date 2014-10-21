@@ -8,82 +8,79 @@ use DOMDocument;
 
 class Source extends ImportSource
 {
-    public function __construct ($xml, $offset, $limit)
+    public function current()
     {
-        $feed = new DOMDocument();
-        $feed->load($xml);
-        echo "\nloaded... \n";
-        $this->title = $feed->getElementsByTagName('feed')->item(0)->getElementsByTagName('title')->item(0)->nodeValue;
-        $this->id = $feed->getElementsByTagName('feed')->item(0)->getElementsByTagName('id')->item(0)->nodeValue;
-        $items = $feed->getElementsByTagName('feed')->item(0)->getElementsByTagName('entry');
-        $attribs = array();
-        $rows =0;
-        foreach($items as $key => $item)
+        if ( !$this->_entries )
         {
-            echo "Rows loaded: " . $key . "\r";
-            if( $rows >= $limit )
+            $this->_entries = $this->feed->getElementsByTagName('feed')->item(0)->getElementsByTagName('entry');
+        }
+        $attrib=array();
+        foreach($this->_entries->item($this->_iterations)->getElementsByTagName('properties') as $elements)
+        {
+            foreach( $elements->childNodes as $entry)
             {
-                break;
-            }
-            if( $key >= $offset )
-            {
-                foreach($item->getElementsByTagName('properties') as $elements)
+                if($entry->nodeName != "#text")
                 {
-                    foreach( $elements->childNodes as $entry)
+                    if( $entry->getAttribute('metadata:type') == "Edm.String" )
                     {
-                        if($entry->nodeName != "#text")
-                        {
-                            if( $entry->getAttribute('metadata:type') == "Edm.String" )
-                            {
-                                if($entry->textContent == "")
-                                    $attribs[$rows][$entry->localName] = "";
-                                else
-                                    $attribs[$rows][$entry->localName] = $entry->textContent;
-                            }
-                            if( $entry->getAttribute('metadata:type') == "Edm.Decimal" )
-                            {
-                                if($entry->textContent == "")
-                                    $attribs[$rows][$entry->localName] = (float)0;
-                                else
-                                    $attribs[$rows][$entry->localName] = (float)$entry->textContent;
-                            }
-                            if( $entry->getAttribute('metadata:type') == "Edm.DateTime" )
-                            {
-                                if($entry->textContent == "")
-                                    $attribs[$rows][$entry->localName] = "";
-                                else
-                                    $attribs[$rows][$entry->localName] = strtotime($entry->textContent);
-                            }
-                            if( $entry->getAttribute('metadata:type') == "Collection(Edm.String)" )
-                            {
-                                preg_match_all('|<data\:element>(.*)</data\:element>|U', $entry->textContent, $arrXml);
-                                $collection=$arrXml[1];
-                                if( count($collection) > 0 )
-                                    $attribs[$rows][$entry->localName] = $collection;
-                                else
-                                    $attribs[$rows][$entry->localName] = array("");
-                            }
-                        }
+                        if($entry->textContent == "")
+                            $attribs[$entry->localName] = "";
+                        else
+                            $attribs[$entry->localName] = $entry->textContent;
+                    }
+                    if( $entry->getAttribute('metadata:type') == "Edm.Decimal" )
+                    {
+                        if($entry->textContent == "")
+                            $attribs[$entry->localName] = (float)0;
+                        else
+                            $attribs[$entry->localName] = (float)$entry->textContent;
+                    }
+                    if( $entry->getAttribute('metadata:type') == "Edm.DateTime" )
+                    {
+                        if($entry->textContent == "")
+                            $attribs[$entry->localName] = "";
+                        else
+                            $attribs[$entry->localName] = strtotime($entry->textContent);
+                    }
+                    if( $entry->getAttribute('metadata:type') == "Collection(Edm.String)" )
+                    {
+                        preg_match_all('|<data\:element>(.*)</data\:element>|U', $entry->textContent, $arrXml);
+                        $collection=$arrXml[1];
+                        if( count($collection) > 0 )
+                            $attribs[$entry->localName] = $collection;
+                        else
+                            $attribs[$entry->localName] = array("");
                     }
                 }
-                $rows++;
             }
         }
-        echo "\n";
-        $this->_entries = $attribs;
+        return $attribs;
+    }
+    public function __construct ($xml, $offset, $limit)
+    {
+        $this->feed = new DOMDocument();
+        if (!@$this->feed->load($xml))
+        {
+            throw new \Exception( "The source is not readable." );
+        }
+        $this->toKey(0);
+        $this->setOffset($offset);
+        $this->setLimit($limit);
+        $this->title = $this->feed->getElementsByTagName('feed')->item(0)->getElementsByTagName('title')->item(0)->nodeValue;
+        $this->id = $this->feed->getElementsByTagName('feed')->item(0)->getElementsByTagName('id')->item(0)->nodeValue;
+        $this->_entries = $this->feed->getElementsByTagName('feed')->item(0)->getElementsByTagName('entry');
     }
     
-    public function validateImport( $linktoxml )
+    public function validateImport( )
     {
         try {
-        
-            $check = OData\Helper::validate($linktoxml, $errors);
-        
+            $check = OData\Helper::validateDom($this->feed, $errors);
+
             if ($check) {
                 echo"Document is a valid ODATA source. \n";
                 return true;
             } else {
-                echo "Document '" . $sourcefile . "' isn`t valid ODATA source\n";
+                echo "Document isn`t valid ODATA source\n";
                 foreach ($errors as $error) {
                     echo OData\Helper::LibXMLErrorToString($error) . "\n";
                 }

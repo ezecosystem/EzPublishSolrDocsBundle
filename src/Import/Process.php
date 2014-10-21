@@ -19,19 +19,36 @@ class Process implements Importing
         $this->i_repository = $repository;
 
     }
-    function validate( $linktoxml )
+    function validate( )
     {
-        return $this->source->validateImport( $linktoxml );
-        #return true;
+        return $this->source->validateImport( );
     }
     
     function import( ) {
         #$this->stopReplication();
         $importstartzeit=microtime(true);
-        foreach( $this->source as $entry )
+        $from=0;
+        $till=$this->source->limit();
+        
+        $this->source->rewind();
+        if( $this->source->offset() <= $this->source->count())
         {
-            $this->importEntry( $entry );
+            $from=$this->source->offset();
         }
+        if( ( $from + $this->source->limit() ) > $this->source->count())
+        {
+            $till=$this->source->count();
+        }
+        else
+        {
+            $till=$from + $this->source->limit();
+        }
+        for ($i = $from; $i < $till; $i++)
+        {
+            $this->source->toKey($i);
+            $this->importEntry($this->source->current());
+        }
+
         $durationInMilliseconds = (microtime(true) - $importstartzeit) * 1000;
         $timing = number_format($durationInMilliseconds, 3, '.', '') . "ms";
         if($durationInMilliseconds > 1000)
@@ -46,7 +63,6 @@ class Process implements Importing
     {
         $repository = $this->i_repository;
         $contentService = $repository->getContentService();
-        #$repository->setCurrentUser( $repository->getUserService()->loadUser( 14 ) );
         $contentCreateStruct = $contentService->newContentCreateStruct( $this->ContentType, 'ger-DE' );
         $contentCreateStruct_mapped = self::mapClass($entry, $contentCreateStruct);
         $draft = $contentService->createContent( $contentCreateStruct_mapped, array( $this->location ) );
