@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:d="http://docs.oasis-open.org/odata/ns/data"
+            targetNamespace="http://docs.oasis-open.org/odata/ns/metadata"
+            elementFormDefault="qualified">
+    <xsd:import namespace="http://docs.oasis-open.org/odata/ns/data" schemaLocation="{odata4_content_data}"/>
+    <xsd:element name="properties">
+        <xsd:complexType>
+            <xsd:all>
+
+{odata4classdescriptionmetadata}
+            </xsd:all>
+            </xsd:complexType>
+    </xsd:element>
+    <xsd:attribute name="context" />
+</xsd:schema>

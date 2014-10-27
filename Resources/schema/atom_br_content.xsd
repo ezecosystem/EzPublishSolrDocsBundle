@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified"
+            targetNamespace="http://www.w3.org/2005/Atom"
+            xmlns:atom="http://www.w3.org/2005/Atom"
+            xmlns:data="http://schemas.microsoft.com/ado/2007/08/dataservices"
+            xmlns:metadata="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+            
+    <xsd:import namespace="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" schemaLocation="atom_br_content_metadata.xsd"/>
+    <xsd:import namespace="http://schemas.microsoft.com/ado/2007/08/dataservices" schemaLocation="atom_br_content_data.xsd"/>
+    
+    <xsd:element name="feed">
+        <xsd:complexType>
+            <xsd:sequence>
+            <xsd:element name="author" minOccurs="1" />
+            <xsd:element name="title" minOccurs="1" />
+            <xsd:element name="id" minOccurs="1" />
+            <xsd:element name="updated" minOccurs="1" />
+                <xsd:element name="entry" minOccurs="1" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                        <xsd:element name="title" minOccurs="1" />
+                        <xsd:element name="id" minOccurs="1" />
+                        <xsd:element name="updated" minOccurs="1" />
+                            <xsd:element name="content">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element ref="metadata:properties" />
+                                    </xsd:sequence>
+                                <xsd:attribute name="type" type="xsd:string"/>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

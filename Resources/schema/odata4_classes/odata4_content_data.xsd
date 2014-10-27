@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://docs.oasis-open.org/odata/ns/data"
+            elementFormDefault="qualified">
+                    <xsd:element name="ProductID" />
+                    <xsd:element name="ProductName" />
+                    <xsd:element name="SupplierID" />
+                    <xsd:element name="CategoryID" />
+                    <xsd:element name="QuantityPerUnit" />
+                    <xsd:element name="UnitPrice" />
+                    <xsd:element name="UnitsInStock" />
+                    <xsd:element name="UnitsOnOrder" />
+                    <xsd:element name="ReorderLevel" />
+                    <xsd:element name="Discontinued" />
+</xsd:schema>

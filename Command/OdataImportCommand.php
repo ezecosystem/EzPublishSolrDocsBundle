@@ -54,7 +54,8 @@ class OdataImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             $parentLocationId = 2;
             $location = $locationService->newLocationCreateStruct( $parentLocationId );
             $ContentType = $contentTypeService->loadContentTypeByIdentifier( $contentTypeIdentifier );
-            
+            $classes=$this->getContainer()->getParameter('xrow_ez_publish_solr_docs.solr_classes');
+            $contentTypeIdentifierarray = $classes[$contentTypeIdentifier];
             // IMPORTING NOW
             $offset = 0;
             $limit = 2000;
@@ -69,7 +70,7 @@ class OdataImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             
             try
             {
-                $source = new OData\Source( $sourcefile, $offset, $limit);
+                $source = new OData\Source( $sourcefile, $offset, $limit, $contentTypeIdentifierarray);
             }
             catch (\Exception $e)
             {

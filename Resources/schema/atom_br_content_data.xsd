@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://schemas.microsoft.com/ado/2007/08/dataservices"
+            elementFormDefault="qualified">
+    <xsd:element name="name"  />
+    <xsd:element name="zusatz" />
+    <xsd:element name="branche" />
+    <xsd:element name="strasse" />
+    <xsd:element name="plz" />
+    <xsd:element name="ort" />
+    <xsd:element name="fax" />
+    <xsd:element name="logo" />
+    <xsd:element name="url" />
+    <xsd:element name="schlagwoerter" />
+    <xsd:element name="telefon" />
+</xsd:schema>

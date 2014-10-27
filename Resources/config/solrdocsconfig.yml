@@ -133,3 +133,165 @@ parameters:
                   isRequired: true
                   isInfoCollector: false
                   isSearchable: true
+        solrtestdoc:
+            names:
+                'ger-DE': "SolrTestDoc"
+            descriptions:
+                'ger-DE': ""
+            contentTypeGroups:
+            id: 9900
+            status: 0
+            identifier: "solrtestdoc"
+            creationDate: 1410248460
+            modificationDate: 1410248460
+            creatorId: 14
+            modifierId: 14
+            remoteId: 40faa822edc579b02c25f6bb7beec3ad
+            urlAliasSchema: ""
+            nameSchema: "<titel>"
+            isContainer: true
+            mainLanguageCode: "ger-DE"
+            defaultAlwaysAvailable: true
+            defaultSortField: 1
+            defaultSortOrder: 1
+            fields:
+              ProductID:
+                  id: 1
+                  identifier: "ProductID"
+                  fieldTypeIdentifier: "ezinteger"
+                  names:
+                      'ger-DE': "ProductID"
+                  descriptions:
+                      'ger-DE': "ProductID"
+                  fieldGroup : ""
+                  position : 1
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              ProductName:
+                  id: 2
+                  identifier: "ProductName"
+                  fieldTypeIdentifier: "ezstring"
+                  names:
+                      'ger-DE': "ProductName"
+                  descriptions:
+                      'ger-DE': "ProductName"
+                  fieldGroup : ""
+                  position : 2
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              SupplierID:
+                  id: 3
+                  identifier: "SupplierID"
+                  fieldTypeIdentifier: "ezinteger"
+                  names:
+                      'ger-DE': "SupplierID"
+                  descriptions:
+                      'ger-DE': "SupplierID"
+                  fieldGroup : ""
+                  position : 3
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              CategoryID:
+                  id: 4
+                  identifier: "CategoryID"
+                  fieldTypeIdentifier: "ezinteger"
+                  names:
+                      'ger-DE': "CategoryID"
+                  descriptions:
+                      'ger-DE': "CategoryID"
+                  fieldGroup : ""
+                  position : 4
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              QuantityPerUnit:
+                  id: 5
+                  identifier: "QuantityPerUnit"
+                  fieldTypeIdentifier: "ezstring"
+                  names:
+                      'ger-DE': "QuantityPerUnit"
+                  descriptions:
+                      'ger-DE': "QuantityPerUnit"
+                  fieldGroup : ""
+                  position : 5
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              UnitPrice:
+                  id: 6
+                  identifier: "UnitPrice"
+                  fieldTypeIdentifier: "ezfloat"
+                  names:
+                      'ger-DE': "UnitPrice"
+                  descriptions:
+                      'ger-DE': "UnitPrice"
+                  fieldGroup : ""
+                  position : 4
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              UnitsInStock:
+                  id: 7
+                  identifier: "UnitsInStock"
+                  fieldTypeIdentifier: "ezinteger"
+                  names:
+                      'ger-DE': "UnitsInStock"
+                  descriptions:
+                      'ger-DE': "UnitsInStock"
+                  fieldGroup : ""
+                  position : 7
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              UnitsOnOrder:
+                  id: 8
+                  identifier: "UnitsOnOrder"
+                  fieldTypeIdentifier: "ezinteger"
+                  names:
+                      'ger-DE': "UnitsOnOrder"
+                  descriptions:
+                      'ger-DE': "UnitsOnOrder"
+                  fieldGroup : ""
+                  position : 8
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              ReorderLevel:
+                  id: 9
+                  identifier: "ReorderLevel"
+                  fieldTypeIdentifier: "ezinteger"
+                  names:
+                      'ger-DE': "ReorderLevel"
+                  descriptions:
+                      'ger-DE': "ReorderLevel"
+                  fieldGroup : ""
+                  position : 9
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true
+              Discontinued:
+                  id: 10
+                  identifier: "Discontinued"
+                  fieldTypeIdentifier: "ezboolean"
+                  names:
+                      'ger-DE': "Discontinued"
+                  descriptions:
+                      'ger-DE': "Discontinued"
+                  fieldGroup : ""
+                  position : 10
+                  isTranslatable: false
+                  isRequired: true
+                  isInfoCollector: false
+                  isSearchable: true

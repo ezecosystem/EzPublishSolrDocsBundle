@@ -16,6 +16,7 @@ abstract class ImportSource implements Iterator, Countable, Sourceable
     protected $id;
     protected $_offset;
     protected $_limit;
+    protected $_contenttypeidentifier;
     
     public function __construct($entries)
     {
@@ -75,5 +76,15 @@ abstract class ImportSource implements Iterator, Countable, Sourceable
     public function limit ( )
     {
         return $this->_limit;
+    }
+    
+    public function setContentTypeIdentifier ( $id )
+    {
+        return $this->_contenttypeidentifier = $id;
+    }
+    
+    public function contentTypeIdentifier ( )
+    {
+        return $this->_contenttypeidentifier;
     }
 }

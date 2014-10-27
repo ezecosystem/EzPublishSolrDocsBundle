@@ -21,28 +21,49 @@ class Source extends ImportSource
             {
                 if($entry->nodeName != "#text")
                 {
-                    if( $entry->getAttribute('metadata:type') == "Edm.String" )
+                    if( $entry->getAttribute('m:type') == "Edm.String" )
                     {
                         if($entry->textContent == "")
                             $attribs[$entry->localName] = "";
                         else
                             $attribs[$entry->localName] = $entry->textContent;
                     }
-                    if( $entry->getAttribute('metadata:type') == "Edm.Decimal" )
+                    elseif( $entry->getAttribute('m:type') == "Decimal" )
                     {
                         if($entry->textContent == "")
                             $attribs[$entry->localName] = (float)0;
                         else
                             $attribs[$entry->localName] = (float)$entry->textContent;
                     }
-                    if( $entry->getAttribute('metadata:type') == "Edm.DateTime" )
+                    elseif( $entry->getAttribute('m:type') == "Int16" )
+                    {
+                        if($entry->textContent == "")
+                            $attribs[$entry->localName] = (int)0;
+                        else
+                            $attribs[$entry->localName] = (int)$entry->textContent;
+                    }
+                    elseif( $entry->getAttribute('m:type') == "Int32" )
+                    {
+                        if($entry->textContent == "")
+                            $attribs[$entry->localName] = (int)0;
+                        else
+                            $attribs[$entry->localName] = (int)$entry->textContent;
+                    }
+                    elseif( $entry->getAttribute('m:type') == "Boolean" )
+                    {
+                        if($entry->textContent == "")
+                            $attribs[$entry->localName] = (boolean) false;
+                        else
+                            $attribs[$entry->localName] = (boolean)$entry->textContent;
+                    }
+                    elseif( $entry->getAttribute('metadata:type') == "Edm.DateTime" )
                     {
                         if($entry->textContent == "")
                             $attribs[$entry->localName] = "";
                         else
                             $attribs[$entry->localName] = strtotime($entry->textContent);
                     }
-                    if( $entry->getAttribute('metadata:type') == "Collection(Edm.String)" )
+                    elseif( $entry->getAttribute('metadata:type') == "Collection(Edm.String)" )
                     {
                         preg_match_all('|<data\:element>(.*)</data\:element>|U', $entry->textContent, $arrXml);
                         $collection=$arrXml[1];
@@ -51,12 +72,20 @@ class Source extends ImportSource
                         else
                             $attribs[$entry->localName] = array("");
                     }
+                    else
+                    {
+                        if($entry->textContent == "")
+                            $attribs[$entry->localName] = "";
+                        else
+                            $attribs[$entry->localName] = $entry->textContent;
+                    }
                 }
             }
         }
+
         return $attribs;
     }
-    public function __construct ($xml, $offset, $limit)
+    public function __construct ($xml, $offset, $limit, $contenttypeidentifier)
     {
         $this->feed = new DOMDocument();
         if (!@$this->feed->load($xml))
@@ -66,6 +95,7 @@ class Source extends ImportSource
         $this->toKey(0);
         $this->setOffset($offset);
         $this->setLimit($limit);
+        $this->setContentTypeIdentifier($contenttypeidentifier);
         $this->title = $this->feed->getElementsByTagName('feed')->item(0)->getElementsByTagName('title')->item(0)->nodeValue;
         $this->id = $this->feed->getElementsByTagName('feed')->item(0)->getElementsByTagName('id')->item(0)->nodeValue;
         $this->_entries = $this->feed->getElementsByTagName('feed')->item(0)->getElementsByTagName('entry');
@@ -74,7 +104,7 @@ class Source extends ImportSource
     public function validateImport( )
     {
         try {
-            $check = OData\Helper::validateDom($this->feed, $errors);
+            $check = OData\Helper::validateDom($this->feed, $errors, $this->_contenttypeidentifier );
 
             if ($check) {
                 echo"Document is a valid ODATA source. \n";

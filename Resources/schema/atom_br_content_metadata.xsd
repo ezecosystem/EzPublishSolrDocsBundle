@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:data="http://schemas.microsoft.com/ado/2007/08/dataservices"
+            targetNamespace="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+            elementFormDefault="qualified"
+>
+    <xsd:import namespace="http://schemas.microsoft.com/ado/2007/08/dataservices" schemaLocation="atom_br_content_data.xsd"/>
+    <xsd:element name="properties">
+        <xsd:complexType>
+            <xsd:all>
+                    <xsd:element ref="data:name" minOccurs="1"/>
+                    <xsd:element ref="data:zusatz" minOccurs="1"/>
+                    <xsd:element ref="data:branche" minOccurs="1"/>
+                    <xsd:element ref="data:strasse" minOccurs="1"/>
+                    <xsd:element ref="data:plz" minOccurs="1"/>
+                    <xsd:element ref="data:ort" minOccurs="1"/>
+                    <xsd:element ref="data:fax" minOccurs="1"/>
+                    <xsd:element ref="data:logo" minOccurs="1"/>
+                    <xsd:element ref="data:url" minOccurs="1"/>
+                    <xsd:element ref="data:schlagwoerter" minOccurs="1"/>
+                    <xsd:element ref="data:telefon" minOccurs="0"/>
+            </xsd:all>
+            </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
