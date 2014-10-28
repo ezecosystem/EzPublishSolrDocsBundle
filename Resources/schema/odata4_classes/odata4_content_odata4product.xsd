@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified"
+            targetNamespace="http://www.w3.org/2005/Atom"
+            xmlns:d="http://docs.oasis-open.org/odata/ns/data"
+            xmlns:m="http://docs.oasis-open.org/odata/ns/metadata"
+            xmlns:georss="http://www.georss.org/georss"
+            xmlns:gml="http://www.opengis.net/gml"
+            xmlns:atom="http://www.w3.org/2005/Atom"
+            xmlns:xml="http://www.w3.org/XML/1998/namespace"
+>
+
+    <xsd:import namespace="http://docs.oasis-open.org/odata/ns/metadata" schemaLocation="odata4_content_metadata_odata4product.xsd"/>
+    <xsd:import namespace="http://docs.oasis-open.org/odata/ns/data" schemaLocation="odata4_content_data_odata4product.xsd"/>
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/03/xml.xsd" />
+    
+    <xsd:element name="feed">
+        <xsd:complexType>
+
+            <xsd:sequence>
+            <xsd:element name="id" minOccurs="1" />
+            <xsd:element name="title" minOccurs="1" />
+            <xsd:element name="updated" minOccurs="1" />
+            <xsd:element name="link" minOccurs="1" />
+
+                <xsd:element name="entry" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="id" minOccurs="1" />
+                            <xsd:element name="category" minOccurs="1" />
+                            <xsd:element name="link" minOccurs="1" maxOccurs="unbounded" />
+                            <xsd:element name="title" minOccurs="1" />
+                            <xsd:element name="updated" minOccurs="1" />
+                            <xsd:element name="author" minOccurs="1" />
+                            <xsd:element name="content">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element ref="m:properties" />
+                                    </xsd:sequence>
+                                <xsd:attribute name="type" type="xsd:string"/>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="link" minOccurs="0" />
+            </xsd:sequence>
+            <xsd:attribute ref="xml:base"/>
+            <xsd:attribute ref="m:context"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+</xsd:schema>

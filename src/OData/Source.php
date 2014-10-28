@@ -5,6 +5,7 @@ namespace xrow\OData;
 use xrow\EzPublishSolrDocsBundle\src\Import\ImportSource;
 use xrow\OData;
 use DOMDocument;
+use DateTime;
 
 class Source extends ImportSource
 {
@@ -35,6 +36,13 @@ class Source extends ImportSource
                         else
                             $attribs[$entry->localName] = (float)$entry->textContent;
                     }
+                    elseif( $entry->getAttribute('m:type') == "Double" )
+                    {
+                        if($entry->textContent == "")
+                            $attribs[$entry->localName] = (float)0;
+                        else
+                            $attribs[$entry->localName] = (float)$entry->textContent;
+                    }
                     elseif( $entry->getAttribute('m:type') == "Int16" )
                     {
                         if($entry->textContent == "")
@@ -56,7 +64,17 @@ class Source extends ImportSource
                         else
                             $attribs[$entry->localName] = (boolean)$entry->textContent;
                     }
-                    elseif( $entry->getAttribute('metadata:type') == "Edm.DateTime" )
+                    elseif( $entry->getAttribute('m:type') == "DateTimeOffset" )
+                    {
+                        if($entry->textContent == "")
+                            $attribs[$entry->localName] = "";
+                        else
+                        {
+                            #$attribs[$entry->localName] = strtotime($entry->textContent);
+                            $attribs[$entry->localName] = (int)strtotime($entry->textContent);
+                        }
+                    }
+                    elseif( $entry->getAttribute('m:type') == "DateTime" )
                     {
                         if($entry->textContent == "")
                             $attribs[$entry->localName] = "";

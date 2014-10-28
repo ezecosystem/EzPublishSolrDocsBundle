@@ -759,7 +759,7 @@ class ContentService implements ContentServiceInterface
             {
                 $ident="attr_" . $solrField["identifier"] . "_dt";
                 $date = new DateTime();
-                $date->setTimestamp($solrField["value"]);
+                $date->setTimestamp((int)$solrField["value"]);
                 $solrvalue = $date->format( "Y-m-d\\TH:i:s\\Z" );
             }
             

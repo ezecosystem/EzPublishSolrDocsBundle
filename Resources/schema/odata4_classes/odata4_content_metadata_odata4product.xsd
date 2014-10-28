@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:d="http://docs.oasis-open.org/odata/ns/data"
+            targetNamespace="http://docs.oasis-open.org/odata/ns/metadata"
+            elementFormDefault="qualified">
+    <xsd:import namespace="http://docs.oasis-open.org/odata/ns/data" schemaLocation="odata4_content_data_odata4product.xsd"/>
+    <xsd:element name="properties">
+        <xsd:complexType>
+            <xsd:all>
+
+<xsd:element ref="d:ID" minOccurs="1"/>
+<xsd:element ref="d:Name" minOccurs="1"/>
+<xsd:element ref="d:Description" minOccurs="1"/>
+<xsd:element ref="d:ReleaseDate" minOccurs="1"/>
+<xsd:element ref="d:DiscontinuedDate" minOccurs="0"/>
+<xsd:element ref="d:Rating" minOccurs="1"/>
+<xsd:element ref="d:Price" minOccurs="1"/>
+
+            </xsd:all>
+            </xsd:complexType>
+    </xsd:element>
+    <xsd:attribute name="context" />
+</xsd:schema>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://docs.oasis-open.org/odata/ns/data"
+            elementFormDefault="qualified">
+
+<xsd:element name="ID" />
+<xsd:element name="Name" />
+<xsd:element name="Description" />
+<xsd:element name="ReleaseDate" />
+<xsd:element name="DiscontinuedDate" />
+<xsd:element name="Rating" />
+<xsd:element name="Price" />
+
+
+</xsd:schema>
