@@ -4,8 +4,8 @@
 <div style="float: left; width: 180px;">
 </div>
 
-Rubrik: <b>{{ item. attr_rubrik_s }}</b><br />
-Erschienen: <b>{{ item. attr_erschienen_dt }}</b><br />
+Rubriken: <b>{{ item. attr_rubriken____k }}</b><br />
+Erschienen: <b>{{ item. attr_veroeffentlichungsdatum_dt }}</b><br />
 <p>
 {{ item.attr_haupttext_t|length > 250 ? item.attr_haupttext_t|slice(0, 250) ~ '...' : item.attr_haupttext_t  }}
 </p>

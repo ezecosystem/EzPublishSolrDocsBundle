@@ -1,0 +1,25 @@
+<div>
+<h3><a href="/solrdocview/{{ item.meta_remote_id_ms }}" target="_blank">{{ index }}. {{ item.meta_name_t }}</a> (Veranstaltung)</h3>
+<p>Score: {{ item.score }}</p>
+<div style="float: left; width: 180px;">
+{% if item.attr_filmbild_s is defined %}
+<img src="{{ item.attr_filmbild_s }}" /><br />
+{% endif %}
+</div>
+
+{% if item.attr_kino_s is defined  %}
+Kino: <b>{{ item.attr_kino_s }}</b><br />
+{% endif %}
+Einstellungsdatum: <b>{{ item.timestamp }}</b><br />
+{% if item.attr_beschreibung_t is defined  %}
+<p>
+{{ item.attr_beschreibung_t|length > 250 ? item.attr_beschreibung_t|slice(0, 250) ~ '...' : item.attr_beschreibung_t  }}
+</p>
+{% endif %}
+{% if ( highlight is defined ) and  ( highlight != "" ) %}
+<p>Gefunden: <i>{{ highlight|raw }}</i></p>
+{% endif %}
+
+</div>
+
+<div style="clear:both;"></div>

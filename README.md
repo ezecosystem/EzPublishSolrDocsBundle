@@ -27,20 +27,9 @@ php ezpublish/console xrow:odata:validate --source="vendor/xrow/ezpublish-solrdo
 ```
 or
 ```sh
-php ezpublish/console xrow:odata:import --source="<linkToSource>" --class="s_branchenbuch" --offset=0 --limit=1000
+php ezpublish/console xrow:odata:import --source="<linkToSource>" --class="odata4product" --offset=0 --limit=1000 --conc=<1-4 processes threaded> --location="<location slash seperated>" --clean="[no|location|class|all]"
 ```
-or
-```sh
-php ezpublish/console xrow:odata:import --source="<linkToSource>" --class="s_veranstaltung" --offset=0 --limit=1000
-```
-or
-```sh
-php ezpublish/console xrow:odata:import --source="<linkToSource>" --class="s_marktplatz" --offset=0 --limit=1000
-```
-or
-```sh
-php ezpublish/console xrow:odata:import --source="<linkToSource>" --class="s_auto" --offset=0 --limit=1000
-```
+
 
 Add routes to ezpublish/config/routes.yml:
 
@@ -68,6 +57,9 @@ xrow_ez_publish_universalsearch_withsearchtext:
 xrow_ez_publish_universalsearch_ajax:
     path:     /universalsearch_ajax
     defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:solrDocUniversalSearchAjax }
+xrow_ez_publish_universalsearch_ussuggest:
+    path:     /autosuggest/{config}/{searchtext}
+    defaults: { _controller: xrowEzPublishSolrDocsBundle:Default:solrDocUniversalSearchAutoSuggest }
 ```
 
 Components of this Bundle

@@ -1,26 +1,33 @@
 parameters:
-    ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.content_type.class: xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Search\FacetBuilderVisitor\ContentType
     ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.field.class: xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Search\FacetBuilderVisitor\Field
     ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.section.class: xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Search\FacetBuilderVisitor\Section
     ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.user.class: xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Search\FacetBuilderVisitor\User
+    ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.prefix.class: xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Search\FacetBuilderVisitor\Prefix
+    ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.daterange.class: xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Search\FacetBuilderVisitor\DateRange
+    ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.content_type.class: xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Search\FacetBuilderVisitor\ContentType
 
 services:
     ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.content_type:
         class: %ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.content_type.class%
         tags:
             - {name: ezpublish.persistence.solrdoc.search.content.facet_builder_visitor}
-            
+    ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.daterange:
+        class: %ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.daterange.class%
+        tags:
+            - {name: ezpublish.persistence.solrdoc.search.content.facet_builder_visitor}
     ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.field:
         class: %ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.field.class%
         tags:
             - {name: ezpublish.persistence.solrdoc.search.content.facet_builder_visitor}
-
     ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.section:
         class: %ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.section.class%
         tags:
             - {name: ezpublish.persistence.solrdoc.search.content.facet_builder_visitor}
-
     ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.user:
         class: %ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.user.class%
+        tags:
+            - {name: ezpublish.persistence.solrdoc.search.content.facet_builder_visitor}
+    ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.prefix:
+        class: %ezpublish.persistence.solrdoc.search.content.facet_builder_visitor.prefix.class%
         tags:
             - {name: ezpublish.persistence.solrdoc.search.content.facet_builder_visitor}

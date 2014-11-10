@@ -4,10 +4,74 @@
 
     <h1>Universalsearch</h1>
     <form name="uniform" method="post" action="/universalsearch">
-    <input type="text" value="{{ context }}" id="Search" name="SearchText" size="20" class="halfbox yui3-aclist-input" autocomplete="off"><br />
+    <input type="text" value="{{ context }}" id="Search" name="SearchText" size="20" class="halfbox yui3-aclist-input" autocomplete="off">
+    <div style=" border: 1px solid #dbdbdc;
+width: 350px;
+position: absolute;
+background-color: #ffffff;
+    border-radius: 3px;
+    color: #333333;
+    display: inline-block;
+    font-size: 15px;
+    line-height: 21px;
+    margin-bottom: 9px;
+    padding: 4px; display: none;" id="autosuggestbox">
+    </div>
+    <br />
     <input type="submit" value="Suche" name="SearchButton" class="button" ><br />
     </form>
     <br />
+
+    <script>
+
+
+        $( "#Search" )
+        .focusout(function() {
+        	$( "#autosuggestbox" ).fadeOut( 100 );
+        })
+        .keyup(function() {
+            if( $( "#Search" ).val().length > 1)
+            {
+            	$( "#autosuggestbox" ).fadeIn( 100 );
+	        	$.ajax({
+	                type: "POST",
+	                url: "/autosuggest/1/" + $( "#Search" ).val(),
+	                dataType: 'json',
+	                success: function(msg){
+	                	ul = $("<ul>");
+	                	$.each(msg.list, function(val, count) {
+	                		search= $( "#Search" ).val();
+	                		$("#autosuggestbox").append(document.createTextNode( val + "(" + count + ")<br/>"));
+	                		
+	                		    ul.append("<li class='bringmetobox'>" + val.replace(search, "<b>" + search + "</b>") + " (" + count + ")</li>");
+	                		});
+	                    for (var i = 0, l = msg.list.length; i < l; ++i) {
+	                        ul.append("<li>" + msg.list[i].title.content + "</a></li>");
+	                    }
+	                    $("#autosuggestbox").html( ul )
+
+		                
+	                    //$("#autosuggestbox").html( msg.list );
+	                }
+	            })
+            }
+        });
+        
+    	$(function(){
+            $.ajax({
+                type: "POST",
+                url: "/autosuggest/1/" + $( "#Search" ).val(),
+                dataType: 'json',
+                success: function(msg){
+                    $("#autosuggestbox").html( msg.list );
+                }
+            })
+        });
+
+
+        
+    </script>
+    
 
     {% for allfacet_array in allfacets.facets %}
 	       {% if allfacet_array.name == "Klassen" %}
@@ -17,10 +81,30 @@
 	        {% endfor %}
            {%endif%}
 	    {% endfor %}
+	    <br />
+	    <b>Erschienen</b><br />
+	{% for allfacet_array in allfacets.facets %}
+	       {% if allfacet_array.name == "DateRange" %}
+            {% for facetid, facetcount in allfacet_array.entries %}
+                <i>{{ facetid }}:</i> <b>{{ facetcount }}</b> 
+	        &nbsp;&nbsp;
+	        {% endfor %}
+           {%endif%}
+	    {% endfor %}
+	 {% for allfacet_array in allfacets.facets %}
+	    {% if allfacet_array.name == "Schlagwörter" %}
+	    <br /><b>Schlagwörter</b><br />
+            {% for facetid, facetcount in allfacet_array.entries %}
+                - {{ facetid }} ({{ facetcount }}) &nbsp;&nbsp; 
+	        {% endfor %}
+           {%endif%}
+{% endfor %}
+	    <br />
     <hr />
     
     Es wurden <b>{{ result.totalCount }}</b> Einträge für "{{ context|raw }}" gefunden in {{ result.time }} Sekunden.<br />
     <hr />
+
     {% if result %}
         {% for facet_array in result.facets %}
         {% if facet_array.name != "Klassen" %}
@@ -37,34 +121,41 @@
     {% endif %}
     
     <hr />
-    
+
+
     <b>Ergebnisse:</b>
 <br />
     {% if result %}
         {% for document in result.searchHits %}
-        {% if document.valueObject.meta_class_identifier_ms starts with 's_auto' %}
+        {% if document.valueObject.meta_class_identifier_ms starts with 'auto' %}
         {{ include(
             'xrowEzPublishSolrDocsBundle:Default:Line/s_auto.html.twig',
             { 'item': document.valueObject, 'index': loop.index, 'highlight': document.highlight}
         ) }}
-        {% elseif document.valueObject.meta_class_identifier_ms starts with 's_video' %}
+        {% elseif document.valueObject.meta_class_identifier_ms starts with 'video' %}
         {{ include(
             'xrowEzPublishSolrDocsBundle:Default:Line/s_video.html.twig',
             { 'item': document.valueObject, 'index': loop.index, 'highlight': document.highlight }
         ) }}
-        {% elseif document.valueObject.meta_class_identifier_ms starts with 's_marktplatz' %}
+        {% elseif document.valueObject.meta_class_identifier_ms starts with 'marktplatz' %}
         {{ include(
             'xrowEzPublishSolrDocsBundle:Default:Line/s_marktplatz.html.twig',
             { 'item': document.valueObject, 'index': loop.index, 'highlight': document.highlight }
         ) }}
-        {% elseif document.valueObject.meta_class_identifier_ms starts with 's_branchenbuch' %}
+        {% elseif document.valueObject.meta_class_identifier_ms starts with 'branchenbuch' %}
         {{ include(
             'xrowEzPublishSolrDocsBundle:Default:Line/s_branchenbuch.html.twig',
+            { 'item': document.valueObject, 'index': loop.index, 'highlight': document.highlight }
+        ) }}
+        {% elseif document.valueObject.meta_class_identifier_ms starts with 'veranstaltung' %}
+        {{ include(
+            'xrowEzPublishSolrDocsBundle:Default:Line/s_veranstaltung.html.twig',
             { 'item': document.valueObject, 'index': loop.index, 'highlight': document.highlight }
         ) }}
         {% else %}
             {{ loop.index }} - <a href="/solrdocview/{{ document.valueObject.meta_remote_id_ms }}" target="_blank">{{ document.valueObject.meta_name_t }}</a>({{ document.valueObject.meta_class_identifier_ms }}) - {{ document.valueObject.timestamp }}
 	        <br />
+	        <a href="/solrdocview/{{ document.valueObject.meta_remote_id_ms }}" target="_blank">{{ document.valueObject.meta_remote_id_ms }}</a>
 	        <p>
             </p>
         {% endif %}

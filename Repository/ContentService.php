@@ -107,17 +107,14 @@ class ContentService implements ContentServiceInterface
     )
     {
         $this->repository = $repository;
-        #die("ContentService");
         $this->persistenceHandler = $handler;
         $this->domainMapper = $domainMapper;
         $this->relationProcessor = $relationProcessor;
         $this->nameSchemaService = $nameSchemaService;
-        #die("ContentService");
         // Union makes sure default settings are ignored if provided in argument
         $this->settings = $settings + array(
             //'defaultSetting' => array(),
         );
-        #die("dlkfjsdf");
     }
 
     /**
@@ -134,7 +131,6 @@ class ContentService implements ContentServiceInterface
      */
     public function loadContentInfo( $contentId )
     {
-        #die("lksdjf");
         $contentInfo = $this->internalLoadContentInfo( $contentId );
         if ( !$this->repository->canUser( 'content', 'read', $contentInfo ) )
             throw new UnauthorizedException( 'content', 'read' );
@@ -288,7 +284,6 @@ class ContentService implements ContentServiceInterface
      */
     public function loadContentByContentInfo( ContentInfo $contentInfo, array $languages = null, $versionNo = null, $useAlwaysAvailable = false )
     {
-        #die("lksjfContentInfo");
         return $this->loadContent(
             $contentInfo->id,
             $languages,
@@ -308,7 +303,6 @@ class ContentService implements ContentServiceInterface
      */
     public function loadContentByVersionInfo( APIVersionInfo $versionInfo, array $languages = null, $useAlwaysAvailable = false )
     {
-        #die("lksjfContentInfo");
         return $this->loadContent(
             $versionInfo->getContentInfo()->id,
             $languages,
@@ -458,6 +452,7 @@ class ContentService implements ContentServiceInterface
      */
     public function createContent( APIContentCreateStruct $contentCreateStruct, array $locationCreateStructs = array() )
     {
+        #$startzeit=microtime(true);
         if ( $contentCreateStruct->mainLanguageCode === null )
         {
             throw new InvalidArgumentException( "\$contentCreateStruct", "'mainLanguageCode' property must be set" );
@@ -484,7 +479,7 @@ class ContentService implements ContentServiceInterface
             $contentCreateStruct->contentType->id
         );
         
-
+        $contentCreateStruct->sectionId = 1;
         if ( empty( $contentCreateStruct->sectionId ) )
         {
             if ( isset( $locationCreateStructs[0] ) )
@@ -500,11 +495,13 @@ class ContentService implements ContentServiceInterface
             }
         }
         
+        /*
         if ( !$this->repository->canUser( 'content', 'create', $contentCreateStruct, $locationCreateStructs ) )
         {
             throw new UnauthorizedException( 'content', 'create' );
         }
-        
+        */
+        /*
         if ( !empty( $contentCreateStruct->remoteId ) )
         {
             try
@@ -525,12 +522,17 @@ class ContentService implements ContentServiceInterface
         {
             $contentCreateStruct->remoteId = $this->domainMapper->getUniqueHash( $contentCreateStruct );
         }
+        */
+        #Expect RemoteID is unique
+        $contentCreateStruct->remoteId = $this->domainMapper->getUniqueHash( $contentCreateStruct );
+        
         
         $spiLocationCreateStructs = $this->buildSPILocationCreateStructs( $locationCreateStructs );
 
         
         
         $languageCodes = $this->getLanguageCodesForCreate( $contentCreateStruct );
+        
         $fields = $this->mapFieldsForCreate( $contentCreateStruct );
         
         $fieldValues = array();
@@ -596,6 +598,7 @@ class ContentService implements ContentServiceInterface
                     $fieldValue,
                     $fieldDefinition->id
                 );
+                
                 $fieldValues[$fieldDefinition->identifier][$languageCode] = $fieldValue;
                 
                 
@@ -657,13 +660,44 @@ class ContentService implements ContentServiceInterface
                 )->id
             )
         );
+        
 
-        $defaultObjectStates = $this->getDefaultObjectStates();
+        if( !is_numeric($spiContentCreateStruct->locations[0]->parentId) && $spiContentCreateStruct->locations[0]->parentId != "")
+        {
+            $url = trim($spiContentCreateStruct->locations[0]->parentId, '/');
+            $url_array=explode("/", $url);
+            $url_array[] = $spiContentCreateStruct->remoteId;
+            $url_alias_cats = array();
+            foreach( $url_array as $depth => $part )
+            {
+                $fullpart = "";
+                for ($i = 0; $i <= $depth; $i++)
+                {
+                    $fullpart.= $url_array[$i] . "/";
+                }
+                $url_alias_cats[] = $depth . "/" . $fullpart;
+            }
+            $url_alias = $url_alias_cats;
+            $lasturlelement = array_pop($url_alias_cats);
+            $parent_url_alias = $url_alias_cats;
+        }
+        else
+        {
+            $url_alias_cats = array("0/" . $spiContentCreateStruct->locations[0]->parentId, "1/". $spiContentCreateStruct->locations[0]->parentId . "/".$spiContentCreateStruct->remoteId);
+            $url_alias = $url_alias_cats;
+            $lasturlelement = array_pop($url_alias_cats);
+            $parent_url_alias = $url_alias_cats;
+        }
+        
+        # we ommit defaultObjectStates!!!!
+        #$defaultObjectStates = $this->getDefaultObjectStates();
+        
+        
         
         #This is the point where a new version is created
         #We create a version 1 of solrDoc
         #$spiContent = $this->persistenceHandler->contentHandler()->create( $spiContentCreateStruct );
-        
+        #$startzeit=microtime(true);
         $solrserverconfig = Globals::getSolrServerConfig();
         $solrglobalconfig = Globals::getSolrGlobalConfig();
         $client = new \Solarium\Client($solrserverconfig);
@@ -672,28 +706,37 @@ class ContentService implements ContentServiceInterface
         $update = $client->createUpdate();
         $doc1 = $update->createDocument();
         $doc1->meta_installation_id_ms = $solrglobalconfig["meta_installation_id_ms"];
-        $doc1->is_solrdoc_b = true;
         $doc1->meta_guid_ms = $spiContentCreateStruct->remoteId;
         $doc1->meta_name_t = $spiContentCreateStruct->name["ger-DE"];
         $doc1->meta_sort_name_ms = $spiContentCreateStruct->name["ger-DE"];
-
-        $doc1->meta_installation_url_ms = $solrglobalconfig["meta_installation_id_ms"];
-        $doc1->meta_id_si = 0;
-        $doc1->meta_class_name_ms= $contentCreateStruct->contentType->identifier;
-        $doc1->meta_section_id_si = $spiContentCreateStruct->sectionId;
-        $doc1->meta_owner_id_si = $spiContentCreateStruct->ownerId;
-        $doc1->meta_contentclass_id_si= $spiContentCreateStruct->typeId;
-        $doc1->meta_current_version_si= 1;
         $doc1->meta_remote_id_ms= $spiContentCreateStruct->remoteId;
+        $doc1->meta_current_version_si= 1;
         $doc1->meta_class_identifier_ms =$contentCreateStruct->contentType->identifier;
-
+        $doc1->meta_class_name_ms= $contentCreateStruct->contentType->names["ger-DE"];
+        $doc1->meta_contentclass_id_si= $spiContentCreateStruct->typeId;
+        $doc1->meta_url_alias_ms=$url_alias;
+        $doc1->meta_parent_url_alias_ms=array_pop($parent_url_alias);
+        $doc1->meta_main_url_alias_ms=array_pop($url_alias);
+        $doc1->meta_language_code_ms= $solrglobalconfig["meta_language_code_ms"];
+        
         $date = new DateTime();
         $date->setTimestamp($spiContentCreateStruct->modified);
-        $doc1->meta_modified_dt=$date->format( "Y-m-d\\TH:i:s\\Z" );
         $doc1->meta_published_dt = $date->format( "Y-m-d\\TH:i:s\\Z" );
+        $doc1->timestamp= $date->format( "Y-m-d\\TH:i:s\\Z" );
+        
+        
+        $doc1->meta_id_si = 0;
+        
+        /*
+        // is that really nessecary?
         #$doc1->meta_main_parent_node_id_si= 61;
         #$doc1->meta_node_id_si=array( 68 );
-        #$doc1->meta_url_alias_ms=array( "Getting-Started/Selected-Features");
+        $doc1->is_solrdoc_b = true;
+        $doc1->meta_installation_url_ms = $solrglobalconfig["meta_installation_id_ms"];
+        $doc1->meta_id_si = 0;
+        $doc1->meta_section_id_si = $spiContentCreateStruct->sectionId;
+        $doc1->meta_owner_id_si = $spiContentCreateStruct->ownerId;
+        $doc1->meta_modified_dt=$date->format( "Y-m-d\\TH:i:s\\Z" );
         $doc1->meta_is_hidden_b=array( false );
         $doc1->meta_is_invisible_b=array( false );
         $doc1->meta_always_available_b = $contentCreateStruct->alwaysAvailable;
@@ -701,16 +744,17 @@ class ContentService implements ContentServiceInterface
         $doc1->meta_sort_order_ms=array( "1");
         $doc1->meta_priority_si=array( 0 );
         $doc1->meta_view_count_si=array(0);
-        $doc1->meta_main_url_alias_ms= "Start/";
-
-        $doc1->meta_language_code_ms= $solrglobalconfig["meta_language_code_ms"];
         $doc1->meta_owner_name_t = $solrglobalconfig["meta_owner_name_t"];
         $doc1->meta_owner_group_id_si = array( $solrglobalconfig["meta_owner_group_id_si"] );
         $doc1->meta_object_states_si=array( $solrglobalconfig["meta_object_states_si"] );
         
+        */
+        
         // LoopThroughFields
         
-        
+        #var_dump(count($SolrDocFields));
+        #var_dump($SolrDocFields);
+        #die("sdkfj");
         foreach( $SolrDocFields as $solrField )
         {
             if( $solrField["type"] == "eztext" )
@@ -740,7 +784,7 @@ class ContentService implements ContentServiceInterface
             if( $solrField["type"] == "ezfloat" )
             {
                 $ident="attr_" . $solrField["identifier"] . "_f";
-                $solrvalue = $solrField["value"];
+                $solrvalue = (float)$solrField["value"];
             }
             
             if( $solrField["type"] == "ezkeyword" )
@@ -783,12 +827,23 @@ class ContentService implements ContentServiceInterface
             $doc1->$ident = $solrvalue;
         }
         
-
-        $date = new DateTime();
-        $date->setTimestamp($spiContentCreateStruct->modified);
-        $doc1->timestamp= $date->format( "Y-m-d\\TH:i:s\\Z" );
+        
+        
+        
         $update->addDocuments(array($doc1));
         $result = $client->update($update);
+        /*
+        $durationInMilliseconds = (microtime(true) - $startzeit) * 1000;
+        $timing = number_format($durationInMilliseconds, 3, '.', '') . "ms";
+        if($durationInMilliseconds > 1000)
+        {
+            $timing = number_format($durationInMilliseconds / 1000, 1, '.', '') . "sec";
+        }
+        echo "\nI:" . $timing . "\n";
+        */
+        
+        
+        
         
         /* Orig creation
         

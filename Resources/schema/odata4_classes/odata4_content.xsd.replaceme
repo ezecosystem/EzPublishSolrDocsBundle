@@ -18,20 +18,20 @@
         <xsd:complexType>
 
             <xsd:sequence>
-            <xsd:element name="id" minOccurs="1" />
+            <xsd:element name="id" minOccurs="0" />
             <xsd:element name="title" minOccurs="1" />
             <xsd:element name="updated" minOccurs="1" />
-            <xsd:element name="link" minOccurs="1" />
+            <xsd:element name="link" minOccurs="0" />
 
                 <xsd:element name="entry" maxOccurs="unbounded">
                     <xsd:complexType>
                         <xsd:sequence>
-                            <xsd:element name="id" minOccurs="1" />
-                            <xsd:element name="category" minOccurs="1" />
-                            <xsd:element name="link" minOccurs="1" maxOccurs="unbounded" />
+                            <xsd:element name="id" minOccurs="0" />
+                            <xsd:element name="category" minOccurs="0" />
+                            <xsd:element name="link" minOccurs="0" maxOccurs="unbounded" />
                             <xsd:element name="title" minOccurs="1" />
                             <xsd:element name="updated" minOccurs="1" />
-                            <xsd:element name="author" minOccurs="1" />
+                            <xsd:element name="author" minOccurs="0" />
                             <xsd:element name="content">
                                 <xsd:complexType>
                                     <xsd:sequence>

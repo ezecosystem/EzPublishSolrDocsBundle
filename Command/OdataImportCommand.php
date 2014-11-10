@@ -22,8 +22,11 @@ class OdataImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $this->setDefinition(array(
             new InputOption('source', null, InputOption::VALUE_REQUIRED, 'Path of document or HTTP URL'),
             new InputOption('class', null, InputOption::VALUE_REQUIRED, 'Class of creation'),
-            new InputOption('limit', null, InputOption::VALUE_OPTIONAL, 'Limit of importing entries, default 2000'),
-            new InputOption('offset', null, InputOption::VALUE_OPTIONAL, 'Offset of importing entries, default 0')
+            new InputOption('limit', null, InputOption::VALUE_OPTIONAL, 'Limit of importing entries, default 5000', 5000),
+            new InputOption('offset', null, InputOption::VALUE_OPTIONAL, 'Offset of importing entries, default 0', 0),
+            new InputOption('conc', null, InputOption::VALUE_OPTIONAL, 'Concurring processes, default 1', 1),
+            new InputOption('location', null, InputOption::VALUE_OPTIONAL, 'Virtual location e.g. Solrdoc/Test/anywhere', '/Solrdocs'),
+            new InputOption('clean', null, InputOption::VALUE_OPTIONAL, 'Clean docs before import, default no values: [no|location|class|all]', 'no')
         ));
     }
 
@@ -39,11 +42,61 @@ class OdataImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $contentTypeIdentifier = $input->getOption('class');
         $limitopt = $input->getOption('limit');
         $offsetopt = $input->getOption('offset');
+        $processesopt = $input->getOption('conc');
 
+        
+        // Check Cleaning before import
+    switch ($input->getOption('clean'))
+    {
+        case "no":
+            $output->writeln("Not cleaning");
+            break;
+        case "all":
+            $output->writeln("CLEANING ALL!");
+            $client = new \Solarium\Client($this->getContainer()->getParameter('xrow_ez_publish_solr_docs.solrserverconfig'));
+            $update = $client->createUpdate();
+            #$update->addDeleteQuery('meta_class_name_ms:"Video"');
+            $update->addDeleteQuery('*:*');
+            $update->addCommit();
+            $result = $client->update($update);
+            break;
+        case "class":
+            $output->writeln("CLEANING CLASS: " . $contentTypeIdentifier);
+            $client = new \Solarium\Client($this->getContainer()->getParameter('xrow_ez_publish_solr_docs.solrserverconfig'));
+            $update = $client->createUpdate();
+            $update->addDeleteQuery('meta_class_identifier_ms:"' . trim($contentTypeIdentifier) .'"');
+            $update->addCommit();
+            $result = $client->update($update);
+            break;
+        case "location":
+            $output->writeln("CLEANING Location: " . $input->getOption('location'));
+            $client = new \Solarium\Client($this->getContainer()->getParameter('xrow_ez_publish_solr_docs.solrserverconfig'));
+            $url = trim($input->getOption('location'), '/');
+            $url_array=explode("/", $url);
+            $url_alias_cats = array();
+            foreach( $url_array as $depth => $part )
+            {
+                $fullpart = "";
+                for ($i = 0; $i <= $depth; $i++)
+                {
+                $fullpart.= $url_array[$i] . "/";
+                }
+                $url_alias_cats[] = $depth . "/" . $fullpart;
+            }
+            $update = $client->createUpdate();
+            $update->addDeleteQuery('meta_parent_url_alias_ms:"' . array_pop($url_alias_cats) .'"');
+            $update->addCommit();
+            $result = $client->update($update);
+            break;
+        default:
+            $output->writeln("CLEANING anything since no vaild option.");
+        }
+        
+        
         try {
             $startzeit=microtime(true);
-            $output->writeln("Starting Import");
-            $output->writeln("---------------");
+            $output->writeln("Starting Import...");
+            $output->writeln("------------------");
             $output->writeln("");
             
             // PREPARING
@@ -51,26 +104,18 @@ class OdataImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             $repository->setCurrentUser( $repository->getUserService()->loadUser( 14 ) );
             $contentTypeService = $repository->getContentTypeService();
             $locationService = $repository->getLocationService();
-            $parentLocationId = 2;
-            $location = $locationService->newLocationCreateStruct( $parentLocationId );
+            $parentLocation = $input->getOption('location');
+            #$parentLocationId = 2;
+            $location = $locationService->newLocationCreateStruct( $parentLocation );
+            
             $ContentType = $contentTypeService->loadContentTypeByIdentifier( $contentTypeIdentifier );
             $classes=$this->getContainer()->getParameter('xrow_ez_publish_solr_docs.solr_classes');
             $contentTypeIdentifierarray = $classes[$contentTypeIdentifier];
             // IMPORTING NOW
-            $offset = 0;
-            $limit = 2000;
-            if( $offsetopt !== null )
-            {
-                $offset=$offsetopt;
-            }
-            if( $limitopt !== null )
-            {
-                $limit=$limitopt;
-            }
             
             try
             {
-                $source = new OData\Source( $sourcefile, $offset, $limit, $contentTypeIdentifierarray);
+                $source = new OData\Source( $sourcefile, $offsetopt, $limitopt, $contentTypeIdentifierarray);
             }
             catch (\Exception $e)
             {
@@ -79,19 +124,20 @@ class OdataImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                 exit();
             }
             
-            $output->writeln("Sourced " . $sourcefile);
-            $output->writeln("---------------");
+            $output->writeln("Sourced: " . $sourcefile);
+            #$output->writeln("---------------");
             $output->writeln("");
             
-            $import = new Import\Process( $location, $ContentType, $source, $repository );
+            $import = new Import\Process( $location, $ContentType, $source, $repository, $processesopt );
             
             
-            $output->writeln("Validate and go");
-            $output->writeln("---------------");
+            $output->writeln("Validating...");
+            #$output->writeln("---------------");
             $output->writeln("");
             
             if($import->validate( $sourcefile ))
             {
+                $output->writeln("");
                 $output->writeln("Rows in total: " . $source->count());
                 $import->import($source);
             }

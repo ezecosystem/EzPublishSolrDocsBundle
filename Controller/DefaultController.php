@@ -48,8 +48,27 @@ class DefaultController extends Controller
         return $response;
     }
     
+    public function solrDocUniversalSearchAutoSuggestAction( $config=1, $searchtext = ""  )
+    {
+        $response = new JsonResponse();
+        $repository = $this->container->get( 'ezpublish.solrapi.repository' );
+        $persistenceHandler = $this->container->get( 'ezpublish.spi.persistence.legacy_solrdoc' );
+        $searchHandler = $persistenceHandler->searchHandler();
+        $allfacetquery = new Query();
+        $allfacetquery->query = new Query\Criterion\MatchAll();
+        $allfacetquery->facetBuilders = array(
+                new \xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Query\FacetBuilder\PrefixFacetBuilder(array("searchpart" => $searchtext, "name" => "Autosuggest")) 
+        );
+        $allfacetquery->limit = 0;
+        $allfacets = $searchHandler->findContent( $allfacetquery );
+        $facets=$allfacets->facets;
+        $response->setData(array('message' => $searchtext, 'config' => $config, 'list' => $facets[0]->entries));
+        return $response;
+    }
+    
     public function solrDocUniversalSearchAction( $searchtext = "" )
     {
+
         $repository = $this->container->get( 'ezpublish.solrapi.repository' );
         #$searchService = $repository->getSearchService();
         $persistenceHandler = $this->container->get( 'ezpublish.spi.persistence.legacy_solrdoc' );
@@ -65,28 +84,20 @@ class DefaultController extends Controller
             
             $allfacetquery = new Query();
             $allfacetquery->query = new Query\Criterion\MatchAll();
-            #$query->facetBuilders = new Facet\ContentTypeFacet(array("entries" => 10, "name" => "is_solrdoc_b"));
-            #$query->query = new Query\Criterion\FullText( $searchtext );
-            #&facet.query=attr_erstzulassung_dt:[NOW-1DAY TO NOW]&facet.query=attr_erstzulassung_dt:[NOW-7DAY TO NOW-1DAY]&facet.query=attr_erstzulassung_dt:[NOW-31DAY TO NOW-7DAY]&facet.query=attr_erstzulassung_dt:[NOW-365DAY TO NOW-31DAY]
-            $allfacetquery->facetBuilders = array( new Query\FacetBuilder\ContentTypeFacetBuilder(array("name" => "Klassen")),
-            new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_kategorie_s", "name" => "Kategorien")),
-            new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k", "name" => "Schlagwörter")),
+            $allfacetquery->facetBuilders = array(
+                new \xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Query\FacetBuilder\DateRangeFacetBuilder(array("fieldPaths" => "attr_veroeffentlichungsdatum_dt", "name" => "Erschienen")),
+                new Query\FacetBuilder\ContentTypeFacetBuilder(array("name" => "Klassen")),
+                new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_kategorie_s", "name" => "Kategorien")),
+                new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k", "name" => "Schlagwörter", "limit" => 5)),
             );
+           
             $allfacetquery->limit = 0;
             $allfacets = $searchHandler->findContent( $allfacetquery );
             
             
             $query = new Query();
             $query->query = new Query\Criterion\MatchAll();
-            #$query->facetBuilders = new Facet\ContentTypeFacet(array("entries" => 10, "name" => "is_solrdoc_b"));
-            #$query->query = new Query\Criterion\FullText( $searchtext );
-            #&facet.query=attr_erstzulassung_dt:[NOW-1DAY TO NOW]&facet.query=attr_erstzulassung_dt:[NOW-7DAY TO NOW-1DAY]&facet.query=attr_erstzulassung_dt:[NOW-31DAY TO NOW-7DAY]&facet.query=attr_erstzulassung_dt:[NOW-365DAY TO NOW-31DAY]
-            $query->facetBuilders = array( new Query\FacetBuilder\ContentTypeFacetBuilder(array("name" => "Klassen")),
-                    new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_kategorie_s", "name" => "Kategorien")),
-                    new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k", "name" => "Schlagwörter")),
 
-            );
-            #var_dump(new Query\FacetBuilder\ContentTypeFacetBuilder());
             if( $request->query->get('sortorder') !== null)
             {
                 if($request->query->get('sortorder') == "1"  )
@@ -115,16 +126,13 @@ class DefaultController extends Controller
                     )
                     );
                 }
-                # new Query\Criterion\CustomField("meta_class_name_ms", Operator::EQ, "s_artikel");
-                #fq=meta_class_name_ms%3A"s_artikel"
                 
             }
             
             $query->limit = 10;
-            #var_dump($query);
+
             $result = $searchHandler->findContent( $query );
-            #var_dump($result);
-            #die("sldkjf");
+
             $response = new Response();
         }
         else
@@ -132,22 +140,19 @@ class DefaultController extends Controller
             $request = $this->container->get('request');
             $allfacetquery = new Query();
             $allfacetquery->query = new Query\Criterion\FullText( $searchtext );
-            $allfacetquery->facetBuilders = array( new Query\FacetBuilder\ContentTypeFacetBuilder(array("name" => "Klassen")),
-                    new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_rubriken____k", "name" => "Testy") ),
-                    new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k"))
+            $allfacetquery->facetBuilders = array(
+            new \xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Query\FacetBuilder\DateRangeFacetBuilder(array("fieldPaths" => "attr_veroeffentlichungsdatum_dt", "name" => "Erschienen")),
+            new Query\FacetBuilder\ContentTypeFacetBuilder(array("name" => "Klassen")),
+            new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_kategorie_s", "name" => "Kategorien")),
+            new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k", "name" => "Schlagwörter")),
             );
             $allfacetquery->limit = 0;
             $allfacets = $searchHandler->findContent( $allfacetquery );
             
             $query = new Query();
-            #$query->query = new Query\Criterion\MatchAll();
-            #$query->facetBuilders = new Facet\ContentTypeFacet(array("entries" => 10, "name" => "is_solrdoc_b"));
+
             $query->query = new Query\Criterion\FullText( $searchtext );
-            $query->facetBuilders = array( new Query\FacetBuilder\ContentTypeFacetBuilder(),
-                    new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_rubriken____k", "name" => "Testy") ),
-                    new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k"))
-            );
-            
+
             if( $request->query->get('class_filter') !== null)
             {
                 $classfilter = $request->query->get('class_filter');
@@ -155,31 +160,25 @@ class DefaultController extends Controller
                 {
                     $query->filter = new Query\Criterion\LogicalAnd( array(
                             new Query\Criterion\CustomField("meta_class_name_ms", Operator::EQ, "(" . implode(" or ", $classfilter) . ")")
-                    )
-                    );
+                    ) );
                 }
                 else
                 {
                     $query->filter = new Query\Criterion\LogicalAnd( array(
                             new Query\Criterion\CustomField("meta_class_name_ms", Operator::EQ, $classfilter)
-                    )
-                    );
+                    ) );
                 }
-                # new Query\Criterion\CustomField("meta_class_name_ms", Operator::EQ, "s_artikel");
-                #fq=meta_class_name_ms%3A"s_artikel"
             
             }
-            
-            #var_dump(new Query\FacetBuilder\ContentTypeFacetBuilder());
+
             $query->limit = 10;
             $result = $searchHandler->findContent( $query );
-            #var_dump($result);
-            #die("sldkjf");
+
             $response = new Response();
         }
         
         
-    
+        
         return $this->render("xrowEzPublishSolrDocsBundle:Default:solrdocuniversalsearch.html.twig", array(
                 'pagelayout' => "eZDemoBundle::pagelayout.html.twig",
                 'route' => $request->get('_route'),

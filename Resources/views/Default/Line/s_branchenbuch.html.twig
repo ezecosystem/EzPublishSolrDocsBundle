@@ -7,11 +7,11 @@
 {% endif %}
 </div>
 
-Branche: <b>{{ item.attr_branche_s }}</b><br />
+Branche: <b>{{ item.attr_branchen_s }}</b><br />
 Ort: <b>{{ item.attr_ort_s }}</b><br />
-Telefon: <b>{{ item.attr_telefon_s }}</b><br />
+Telefon: {% if item.attr_telefon_s is defined %} <b>{{ item.attr_telefon_s }}</b>{% else %}-{% endif %}<br />
 <p>
-Link: <a href="{{ item.attr_url_ms }}" target="_blank">{{ item.attr_name_s }}</a><br />
+Link: <a href="{{ item.attr_url_ms }}" target="_blank">{{ item.attr_titel_s }}</a><br />
 </p>
 {% if ( highlight is defined ) and  ( highlight != "" ) %}
 <p>Gefunden: <i>{{ highlight|raw }}</i></p>

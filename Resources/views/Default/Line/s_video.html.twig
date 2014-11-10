@@ -8,7 +8,7 @@
 </div>
 
 Länge: <b>{{ item.attr_laenge_s }}</b><br />
-Erschienen: <b>{{ item.attr_erschienen_dt }}</b><br />
+Erschienen: <b>{{ item.attr_veroeffentlichungsdatum_dt }}</b><br />
 Copyright: <b>{{ item.attr_copyright_s }}</b><br />
 <p>
 {{ item.attr_haupttext_t|length > 250 ? item.attr_haupttext_t|slice(0, 250) ~ '...' : item.attr_haupttext_t  }}

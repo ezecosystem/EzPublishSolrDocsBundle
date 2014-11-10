@@ -11,12 +11,13 @@ namespace xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Search\FacetB
 
 use xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Search\FacetBuilderVisitor;
 use eZ\Publish\API\Repository\Values\Content\Query\FacetBuilder;
+#use xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Query\FacetBuilder;
 use eZ\Publish\API\Repository\Values\Content\Search\Facet;
 
 /**
- * Visits the ContentType facet builder
+ * Visits the Field facet builder
  */
-class ContentType extends FacetBuilderVisitor
+class Prefix extends FacetBuilderVisitor
 {
     /**
      * CHeck if visitor is applicable to current facet result
@@ -27,7 +28,8 @@ class ContentType extends FacetBuilderVisitor
      */
     public function canMap( $field )
     {
-        return $field === 'meta_class_name_ms';
+        return $field === 'ezf_sp_words';
+        #return true;
     }
 
     /**
@@ -40,12 +42,20 @@ class ContentType extends FacetBuilderVisitor
      */
     public function map( $field, array $data )
     {
+        return new \xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Facet\PrefixFacet(
+                array(
+                        'name'    => $field,
+                        'entries' => $this->mapData( $data ),
+                )
+        );
+        /*
         return new Facet\ContentTypeFacet(
             array(
-                'name'    => 'Class',
+                'name'    => $field,
                 'entries' => $this->mapData( $data ),
             )
         );
+        */
     }
 
     /**
@@ -57,12 +67,7 @@ class ContentType extends FacetBuilderVisitor
      */
     public function canVisit( FacetBuilder $facetBuilder )
     {
-        #var_dump("canvisit ContentType");
-        #var_dump($facetBuilder instanceof \eZ\Publish\API\Repository\Values\Content\Query\FacetBuilder\ContentTypeFacetBuilder);
-        #var_dump($facetBuilder);
-        return $facetBuilder instanceof \eZ\Publish\API\Repository\Values\Content\Query\FacetBuilder\ContentTypeFacetBuilder;
-        #return $facetBuilder instanceof FacetBuilder\ContentTypeFacetBuilder;
-        #return $facetBuilder instanceof \eZ\Publish\API\Repository\Values\Content\Query\FacetBuilder;
+        return $facetBuilder instanceof \xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Query\FacetBuilder\PrefixFacetBuilder;
     }
 
     /**
@@ -74,22 +79,18 @@ class ContentType extends FacetBuilderVisitor
      */
     public function visit( FacetBuilder $facetBuilder )
     {
-        $fieldpath="meta_class_name_ms";
+        $fieldpath="ezf_sp_words";
         if( $facetBuilder->name != "" )
         {
             $facetname="{!ex=dt key=" . $facetBuilder->name . "}" . $fieldpath;
         }
-        else
-        {
-            $facetname=$fieldpath;
-        }
-
         
         return http_build_query(
                     array(
-                        'facet.field'             => $facetname,
-                        'f.meta_class_name_ms.facet.limit'    => $facetBuilder->limit,
-                        'f.meta_class_name_ms.facet.mincount' => $facetBuilder->minCount,
+                        'facet.field'    => $facetname,
+                        'f.' . $fieldpath . '.facet.limit'    => $facetBuilder->limit,
+                        'f.' . $fieldpath . '.facet.mincount' => $facetBuilder->minCount,
+                        'f.' . $fieldpath . '.facet.prefix'   => $facetBuilder->searchpart,
                     )
                 );
     }

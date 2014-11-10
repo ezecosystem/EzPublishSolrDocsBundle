@@ -58,7 +58,11 @@ class Field extends FacetBuilderVisitor
      */
     public function canVisit( FacetBuilder $facetBuilder )
     {
-        return $facetBuilder instanceof FacetBuilder\FieldFacetBuilder;
+        #var_dump("canvisit Field");
+        #var_dump($facetBuilder instanceof \eZ\Publish\API\Repository\Values\Content\Query\FacetBuilder\FieldFacetBuilder);
+        #var_dump($facetBuilder);
+        
+        return $facetBuilder instanceof \eZ\Publish\API\Repository\Values\Content\Query\FacetBuilder\FieldFacetBuilder;
     }
 
     /**

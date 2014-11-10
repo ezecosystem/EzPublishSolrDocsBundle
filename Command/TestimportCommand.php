@@ -4,6 +4,8 @@ namespace xrow\EzPublishSolrDocsBundle\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use XMLReader;
+use DOMDocument;
  
 class TestimportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -51,12 +53,17 @@ protected function execute( InputInterface $input, OutputInterface $output )
     $output->writeln( "Start..." );
     $this->startTiming("start");
     
-    $update = $client->createUpdate();
-    $update->addDeleteQuery('*:*');
-    $update->addCommit();
-    $result = $client->update($update);
+    #$update = $client->createUpdate();
+    #$update->addCommit();
+    #$result = $client->update($update);
+    #die("Alles committed");
+    #$update = $client->createUpdate();
+    #$update->addDeleteQuery('meta_class_name_ms:"Video"');
+    #$update->addDeleteQuery('*:*');
+    #$update->addCommit();
+    #$result = $client->update($update);
     #die("alles is weck");
-    $output->writeln( "Time until solr cleaned:" . $this->getTimingToNow( "start" ) );
+    #$output->writeln( "Time until solr cleaned:" . $this->getTimingToNow( "start" ) );
 
     /** @var $repository \eZ\Publish\API\Repository\Repository */
     #$repository = $this->getContainer()->get( 'ezpublish.api.repository' );

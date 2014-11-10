@@ -23,9 +23,13 @@ abstract class ImportSource implements Iterator, Countable, Sourceable
         $this->_entries = $entries;
     }
     
-    public function current()
+    public function current( $optionalRow=null )
     {
         return $this->_entries->item($this->_iterations);
+    }
+    public function fromIteration( $iteration )
+    {
+        return $this->_entries->item($iteration);
     }
     public function key ()
     {
@@ -50,7 +54,8 @@ abstract class ImportSource implements Iterator, Countable, Sourceable
     
     public function count()
     {
-        return $this->_entries->length;
+        #return $this->_entries->length;
+        return count($this->_entries);
     }
     
     public function validateImport( )

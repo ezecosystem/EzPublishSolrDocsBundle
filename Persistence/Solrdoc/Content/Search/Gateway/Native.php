@@ -142,12 +142,11 @@ class Native extends Gateway
         }
 
 
-
         
         // @todo: Extract method
         $response = $this->client->request(
             'GET',
-            '/solr/ezp-default/select?' .
+            '/solr/haz.de/select?' .
             http_build_query( $parameters ) .
             ( count( $query->facetBuilders ) ? '&facet=true&facet.sort=count&' : '' ) .
             implode(
@@ -158,6 +157,22 @@ class Native extends Gateway
                 )
             )."&hl=true&hl.fl=ezf_df_text&hl.simple.pre=<b>&hl.simple.post=<%2Fb>"
         );
+       
+        /*
+        var_dump('/solr/haz.de/select?' .
+            http_build_query( $parameters ) .
+            ( count( $query->facetBuilders ) ? '&facet=true&facet.sort=count&' : '' ) .
+            implode(
+                '&',
+                array_map(
+                    array( $this->facetBuilderVisitor, 'visit' ),
+                    $query->facetBuilders
+                )
+            )."&hl=true&hl.fl=ezf_df_text&hl.simple.pre=<b>&hl.simple.post=<%2Fb>");
+            
+        die("ende");
+        */
+        
         
         // @todo: Error handling?
         if( $response->headers["status"] == 200 )
@@ -241,9 +256,13 @@ class Native extends Gateway
                 {
                     $result->facets[] = $this->facetBuilderVisitor->map( $field, $facet );
                 }
+                foreach ( $data->facet_counts->facet_queries as $field => $facet )
+                {
+                    $result->facets[] = $this->facetBuilderVisitor->map( $field, array($facet) );
+                }
             }
             
-            
+
             return $result;
         }
         else
