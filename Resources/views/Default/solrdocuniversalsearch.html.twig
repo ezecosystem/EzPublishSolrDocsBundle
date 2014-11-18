@@ -1,7 +1,7 @@
 {% extends pagelayout %}
 
 {% block content %}
-
+<script type="text/javascript" src="https://raw.githubusercontent.com/websanova/wPaginate/master/wPaginate.js"></script>
     <h1>Universalsearch</h1>
     <form name="uniform" method="post" action="/universalsearch">
     <input type="text" value="{{ context }}" id="Search" name="SearchText" size="20" class="halfbox yui3-aclist-input" autocomplete="off">
@@ -22,9 +22,38 @@ background-color: #ffffff;
     </form>
     <br />
 
-    <script>
-
-
+    <script type="text/javascript">
+    $.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (results==null){
+           return null;
+        }
+        else{
+           return results[1] || 0;
+        }
+    }
+    $( document ).ready(function() {
+    	if($.urlParam('Page') != null)
+		  {
+	  		  var pageIndex = $.urlParam('Page') * 10;
+		  }
+ 	   $('#wPaginate_oben').wPaginate({theme:'grey', total:{{ result.totalCount }}, limit:10,
+ 	 	   index:pageIndex,
+  		  url: function(i){
+  	  		  if($.urlParam('class_filter') != null)
+  	  		  {
+  	  	  		  return '/universalsearch/{{ context }}?Page=' + i + '&class_filter=' + $.urlParam('class_filter');
+  	  		  }
+  	  		  else
+  	  		  {
+    	  			return '/universalsearch/{{ context }}?Page=' + i;
+  	  		  }
+  		   }
+ 	 	   });
+  	  $('#wPaginate_unten').wPaginate({theme:'grey', total:{{ result.totalCount }}, limit:10, index:0, url: function(i){ return '?Page=' + i }});
+    	});
+    
+    
         $( "#Search" )
         .focusout(function() {
         	$( "#autosuggestbox" ).fadeOut( 100 );
@@ -98,13 +127,22 @@ background-color: #ffffff;
                 - {{ facetid }} ({{ facetcount }}) &nbsp;&nbsp; 
 	        {% endfor %}
            {%endif%}
-{% endfor %}
+     {% endfor %}
+	    <br />
+	    	 {% for allfacet_array in allfacets.facets %}
+	    {% if allfacet_array.name == "Kategorien" %}
+	    <br /><b>Kategorien</b><br />
+            {% for facetid, facetcount in allfacet_array.entries %}
+                - {{ facetid }} ({{ facetcount }}) &nbsp;&nbsp; 
+	        {% endfor %}
+           {%endif%}
+     {% endfor %}
 	    <br />
     <hr />
     
     Es wurden <b>{{ result.totalCount }}</b> Einträge für "{{ context|raw }}" gefunden in {{ result.time }} Sekunden.<br />
     <hr />
-
+<div id="wPaginate_oben"></div>
     {% if result %}
         {% for facet_array in result.facets %}
         {% if facet_array.name != "Klassen" %}
@@ -162,6 +200,98 @@ background-color: #ffffff;
 	        <hr />
 	    {% endfor %}
         
+        <div id="wPaginate_unten"></div>
+        
     {% endif %}
+<style type="text/css">
+    /*** styling ***/
+._wPaginate_link{
+display:inline-block; margin-left:5px;
+line-height:20px; width:20px; text-align:center; font-family:verdana; font-size:10px; cursor:pointer;
+border:solid black 1px; text-decoration:none; border-radius:5px;
+}
+._wPaginate_link_first, ._wPaginate_link_prev, ._wPaginate_link_next, ._wPaginate_link_last{width:auto; line-height:10px; padding:3px 5px;}
+/*** themes ***
+/*** blue ***/
+._wPaginate_blue ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+border:1px solid rgba(0, 0, 0, 0.0980392);
+border-bottom-color:rgba(0, 0, 0, 0.247059);
+background-color:#006DCC;
+color:#FFF;
+}
+._wPaginate_blue ._wPaginate_link:hover,
+._wPaginate_blue ._wPaginate_link.active{background-color:#0044CC}
+/*** grey ***/
+._wPaginate_grey ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(255, 255, 255, 0.75) 0 1px 1px;
+border:1px solid rgba(0, 0, 0, 0.14902);
+border-bottom-color:rgba(0, 0, 0, 0.247059);
+background-color:#F5F5F5;
+color:#333;
+}
+._wPaginate_grey ._wPaginate_link:hover,
+._wPaginate_grey ._wPaginate_link.active{background-color:#E6E6E6;}
+/*** greeen ***/
+._wPaginate_green ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+border:1px solid rgba(0, 0, 0, 0.0980392);
+border-bottom-color:rgba(0, 0, 0, 0.247059);
+background-color:#5BB75B;
+color:#FFF;
+}
+._wPaginate_green ._wPaginate_link:hover,
+._wPaginate_green ._wPaginate_link.active{background-color:#51A351;}
+/*** orange ***/
+._wPaginate_orange ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+border:1px solid rgba(0, 0, 0, 0.0980392);
+border-bottom-color: rgba(0, 0, 0, 0.247059);
+background-color:#FAA732;
+color:#FFF;
+}
+._wPaginate_orange ._wPaginate_link:hover,
+._wPaginate_orange ._wPaginate_link.active{background-color:#F89406;}
+/*** red ***/
+._wPaginate_red ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+border:1px solid rgba(0, 0, 0, 0.0980392);
+border-bottom-color:rgba(0, 0, 0, 0.247059);
+background-color:#DA4F49;
+color:#FFF;
+}
+._wPaginate_red ._wPaginate_link:hover,
+._wPaginate_red ._wPaginate_link.active{background-color:#BD362F;}
+/*** lightblue ***/
+._wPaginate_lightblue ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+border:1px solid rgba(0, 0, 0, 0.0980392);
+border-bottom-color:rgba(0, 0, 0, 0.247059);
+background-color:#49AFCD;
+color:#FFF;
+}
+._wPaginate_lightblue ._wPaginate_link:hover,
+._wPaginate_lightblue ._wPaginate_link.active{background-color:#2F96B4;}
+/*** black ***/
+._wPaginate_black ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+border:1px solid rgba(0, 0, 0, 0.0980392);
+border-bottom-color:rgba(0, 0, 0, 0.247059);
+background-color:#363636;
+color:#FFF;
+}
+._wPaginate_black ._wPaginate_link:hover,
+._wPaginate_black ._wPaginate_link.active{background-color:#222222;}
 
+._wPaginate_link_active
+{font-weight: bold; text-decoration: underline;}
+
+</style>
 {% endblock %}

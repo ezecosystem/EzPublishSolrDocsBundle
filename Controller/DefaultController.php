@@ -78,6 +78,7 @@ class DefaultController extends Controller
         {
             $searchtext = $reqparas["SearchText"];
         }
+        
         if( $searchtext == "" )
         {
             $request = $this->container->get('request');
@@ -87,8 +88,8 @@ class DefaultController extends Controller
             $allfacetquery->facetBuilders = array(
                 new \xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Query\FacetBuilder\DateRangeFacetBuilder(array("fieldPaths" => "attr_veroeffentlichungsdatum_dt", "name" => "Erschienen")),
                 new Query\FacetBuilder\ContentTypeFacetBuilder(array("name" => "Klassen")),
-                new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_kategorie_s", "name" => "Kategorien")),
-                new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k", "name" => "SchlagwÃ¶rter", "limit" => 5)),
+                new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_rubriken____k", "name" => "Kategorien")),
+                new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k", "name" => "Schlagwörter", "limit" => 5)),
             );
            
             $allfacetquery->limit = 0;
@@ -96,6 +97,10 @@ class DefaultController extends Controller
             
             
             $query = new Query();
+            if( $request->query->get('Page') !== null)
+            {
+                $query->offset = (int)$request->query->get('Page') * 10;
+            }
             $query->query = new Query\Criterion\MatchAll();
 
             if( $request->query->get('sortorder') !== null)
@@ -143,14 +148,17 @@ class DefaultController extends Controller
             $allfacetquery->facetBuilders = array(
             new \xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Query\FacetBuilder\DateRangeFacetBuilder(array("fieldPaths" => "attr_veroeffentlichungsdatum_dt", "name" => "Erschienen")),
             new Query\FacetBuilder\ContentTypeFacetBuilder(array("name" => "Klassen")),
-            new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_kategorie_s", "name" => "Kategorien")),
-            new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k", "name" => "SchlagwÃ¶rter")),
+            new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_rubriken____k", "name" => "Kategorien")),
+            new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k", "name" => "Schlagwörter")),
             );
             $allfacetquery->limit = 0;
             $allfacets = $searchHandler->findContent( $allfacetquery );
             
             $query = new Query();
-
+            if( $request->query->get('Page') !== null)
+            {
+                $query->offset = (int)$request->query->get('Page') * 10;
+            }
             $query->query = new Query\Criterion\FullText( $searchtext );
 
             if( $request->query->get('class_filter') !== null)
