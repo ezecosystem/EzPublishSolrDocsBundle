@@ -89,7 +89,7 @@ class DefaultController extends Controller
                 new \xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Query\FacetBuilder\DateRangeFacetBuilder(array("fieldPaths" => "attr_veroeffentlichungsdatum_dt", "name" => "Erschienen")),
                 new Query\FacetBuilder\ContentTypeFacetBuilder(array("name" => "Klassen")),
                 new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_rubriken____k", "name" => "Kategorien")),
-                new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k", "name" => "Schlagwörter", "limit" => 5)),
+                new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k", "name" => "SchlagwÃ¶rter", "limit" => 5)),
             );
            
             $allfacetquery->limit = 0;
@@ -149,7 +149,7 @@ class DefaultController extends Controller
             new \xrow\EzPublishSolrDocsBundle\Persistence\Solrdoc\Content\Query\FacetBuilder\DateRangeFacetBuilder(array("fieldPaths" => "attr_veroeffentlichungsdatum_dt", "name" => "Erschienen")),
             new Query\FacetBuilder\ContentTypeFacetBuilder(array("name" => "Klassen")),
             new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_rubriken____k", "name" => "Kategorien")),
-            new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k", "name" => "Schlagwörter")),
+            new Query\FacetBuilder\FieldFacetBuilder(array("fieldPaths" => "attr_schlagwoerter____k", "name" => "SchlagwÃ¶rter")),
             );
             $allfacetquery->limit = 0;
             $allfacets = $searchHandler->findContent( $allfacetquery );
