@@ -1,30 +1,498 @@
 {% extends pagelayout %}
 
 {% block content %}
-
+<script type="text/javascript" src="https://raw.githubusercontent.com/websanova/wPaginate/master/wPaginate.js"></script>
     <h1>Universalsearch</h1>
-    <form name="uniform" method="post" action="/universalsearch">
-    <input type="text" value="{{ context }}" id="Search" name="SearchText" size="20" class="halfbox yui3-aclist-input" autocomplete="off">
-    <br />
-    <input type="submit" value="Suche" name="SearchButton" class="button" ><br />
-    </form>
+    <form name="uniform" method="post" action="/universalsearch2" id="inform2">
+        <input type="text"
+        {% if reqparas.SearchText is defined %}
+        value="{{ reqparas.SearchText }}"
+        {% else %}
+        value=""
+        {% endif %}
+        id="Search" name="SearchText" size="20" class="input-xxlarge search-query" autocomplete="off" />
+        &nbsp;&nbsp;&nbsp;
+        <input type="submit" value="Suche" name="SearchButton" class="button" />
+        <input type="hidden" value="haz" name="info_config" id="info_config" />
+        <input type="hidden" value="tabView_Alle" name="info_tabview" id="info_tabview" />
+        <input type="hidden" value="0" name="info_page" id="info_page" />
+        <div id="queryfilters" style="display: none;"></div>
+        
+    </form>    
     <br />
 
-    {% block jquery %} 
+    <div id="tabViews"></div>
+    <div id="wPaginate_unten"></div>
+    <div id="Resultset"></div>
+    <div id="Resultset_facets"></div>
+    
+  {% block jquery %} 
     <script>
-        $(function(){
+        var offset=0;
+        var limit=10;
+        var filters = {date:1, auto_hersteller: "Seat"};
+        
+        $( "#inform2" ).submit(function( event )
+        {
+            event.preventDefault();
+            //$( "#tabViews" ).empty();
+            $( "#wPaginate_unten" ).empty();
+            //$( "#Resultset" ).empty();
+            //$( "#Resultset_facets" ).empty();
+            waitimage = $("<img src='http://bradsknutson.com/wp-content/uploads/2013/04/page-loader.gif' class='waitforresponseimage' />");
+            $("#Resultset").html(waitimage);
+            tabview=$("#inform2 #info_tabview").val();
+            page=$("#inform2 #info_page").val();
+            config=$("#inform2 #info_config").val();
+            searchtext=$("#inform2 #Search").val();
+            var queryfilter = [];
+            var queryfilterfacetnames = [];
+            $('#inform2 input[name="queryfilter[]"]').each(function() {
+                queryfilter.push( $(this).val() );
+                queryfilterfacetnames.push( $(this).val().split(';')[0] );
+            });
+            
             $.ajax({
                 type: "POST",
                 url: "/universalsearch_ajax",
+                data: {config: config, searchtext: searchtext, tabview: tabview, filters: filters, offset: offset, limit: limit, page: page, queryfilter: queryfilter},
                 dataType: 'json',
-                success: function(msg){
-                    $("#searchResultAjax").html( msg.message );
+                success: function(msg)
+                {
+                    $( "#Resultset" ).empty();
+                    ul = $("<ul>");
+                    ul.append("<li  id='tabView_Alle' class='tabViewItem tabView_first'>Alle (" + msg.facetten.main.totalCount + ")</li>");
+                    $.each(msg.facetten.main.class, function(val, count) {
+                             if(tabview == 'tabView_' + val)
+                             {
+                                 ul.append("<li id='tabView_" + val + "' class='tabViewItem tabView_" + val + " activeTab'>" + val + " (" + msg.actTabViewcount + ")</li>");
+                             }
+                             else
+                             {
+                                 ul.append("<li id='tabView_" + val + "' class='tabViewItem tabView_" + val + "'>" + val + " (" + count + ")</li>");
+                             }
+                                
+                        });
+                    $("#tabViews").html(ul);
+
+                    resultcontainer=$("<div class='resultcontainer'>");
+                    $.each(msg.results, function(classname, elements) {
+                     if( elements.count > 0 )
+                     {
+                        resultcontainer.append("<div class='resultset_class'>" + classname + "</div>");
+                        $.each(elements.elements, function(elementid, element_value)
+                        {
+                            if( element_value.valueObject.meta_class_identifier_ms == "auto" )
+                            {
+                                resultcontainer.append("<div class='resultset_item'><div class='resultset_item_type'>" + element_value.valueObject.meta_class_name_ms + " | " + element_value.valueObject.meta_published_dt + "</div><div class='entry_image'><img src='" + element_value.valueObject.attr_bild_s +"' /></div><a href='/solrdocview/" + element_value.valueObject.meta_guid_ms + "' target='_blank'>" + element_value.valueObject.meta_name_t + "</a></div>");
+                            }
+                            else if( element_value.valueObject.meta_class_identifier_ms == "video" )
+                            {
+                                resultcontainer.append("<div class='resultset_item'><div class='resultset_item_type'>" + element_value.valueObject.meta_class_name_ms + " | " + element_value.valueObject.meta_published_dt + "</div><div class='entry_image'><img src='" + element_value.valueObject.attr_thumbnail_s +"' /></div><a href='/solrdocview/" + element_value.valueObject.meta_guid_ms + "' target='_blank'>" + element_value.valueObject.meta_name_t + "</a></div>");
+                            }
+                            else if( element_value.valueObject.meta_class_identifier_ms == "veranstaltung" )
+                            {
+                                resultcontainer.append("<div class='resultset_item'><div class='resultset_item_type'>" + element_value.valueObject.meta_class_name_ms + " | " + element_value.valueObject.meta_published_dt + "</div><div class='entry_image'><img src='" + element_value.valueObject.attr_filmbild_s +"' /></div><a href='/solrdocview/" + element_value.valueObject.meta_guid_ms + "' target='_blank'>" + element_value.valueObject.meta_name_t + "</a></div>");
+                            }
+                            else if( element_value.valueObject.meta_class_identifier_ms == "marktplatz" )
+                            {
+                                resultcontainer.append("<div class='resultset_item'><div class='resultset_item_type'>" + element_value.valueObject.meta_class_name_ms + " | " + element_value.valueObject.meta_published_dt + "</div><a href='/solrdocview/" + element_value.valueObject.meta_guid_ms + "' target='_blank'>" + element_value.valueObject.meta_name_t + "</a><br /><p>" + jQuery.trim(element_value.valueObject.attr_haupttext_t).substring(0, 250).trim(this) + "..." + "</p></div>");
+                            }
+                            else if( element_value.valueObject.meta_class_identifier_ms == "branchenbuch" )
+                            {
+                                resultcontainer.append("<div class='resultset_item'><div class='resultset_item_type'>" + element_value.valueObject.meta_class_name_ms + " | " + element_value.valueObject.meta_published_dt + "</div><a href='/solrdocview/" + element_value.valueObject.meta_guid_ms + "' target='_blank'>" + element_value.valueObject.meta_name_t + "</a><br /><p>" + element_value.valueObject.attr_branchen_s + "<br />" + element_value.valueObject.attr_strasse_s + "<br />" + element_value.valueObject.attr_plz_s + " " + element_value.valueObject.attr_ort_s + "<br />" +  "</p></div>");
+                            }
+                            else
+                            {
+                                resultcontainer.append("<div class='resultset_item'><div class='resultset_item_type'>" + element_value.valueObject.meta_class_name_ms + " | " + element_value.valueObject.meta_published_dt + "</div><a href='/solrdocview/" + element_value.valueObject.meta_guid_ms + "' target='_blank'>" + element_value.valueObject.meta_name_t + "</a></div>");
+                            }
+                        });
+
+                     }
+                        });
+                    $("#Resultset").html(resultcontainer);
+                    
+                    $("li.tabViewItem").click(function() {
+                        $("#info_tabview").val($(this).attr("id"));
+                        $("#info_page").val(0);
+                        $("#inform2").submit();
+                        
+                    });
+
+
+                    var actualpage=$("#info_page").val();
+                    actualpage=actualpage * 10;
+                    if( msg.actTabViewcount > 10 )
+                    {
+                    $('#wPaginate_unten').wPaginate({theme:'grey', total: msg.actTabViewcount, limit:10, index:actualpage, ajax: true, url:
+                        function(i)
+                        {
+                            $("#info_page").val(i);
+                            $("#inform2").submit();
+                            return "#";
+                        }
+                    });
+                    }
+                    facetten = $("<div class='facettypes'>");
+                    if( tabview == "tabView_Alle" )
+                    {
+                    $.each(msg.facetten.main, function(facettenname, elemente) {
+                        if( facettenname != "class" && facettenname != "totalCount" )
+                        {
+                        facetten.append("<b>" + facettenname + "</b><br />");
+                        facetten_con=$("<ul class='facettencontainer'>");
+                        var f_count=0;
+                        $.each(elemente, function(facettenfilter, itemcount) {
+                            f_count=f_count+1;
+                            if( f_count > 5 )
+                            {
+                                facetten_con.append("<li class='facetten_container_item' style='display: none;'> " + facettenfilter + " (<b>" + itemcount + "</b>)</li>");
+                            }
+                            else
+                            {
+                                facetten_con.append("<li class='facetten_container_item'> " + facettenfilter + " (<b>" + itemcount + "</b>)</li>");
+                            }
+                            });
+                        facetten.append(facetten_con);
+                        }
+                        });
+                    }
+                    $.each(msg.facetten.query, function(facettenname, elemente) {
+                        if( facettenname != "class" && facettenname != "totalCount" )
+                        {
+                            if( $.type(elemente) === "object" )
+                            {
+                                var real_name=facettenname;
+                                if( facettenname == "attr_schlagwoerter____k" )
+                                    var real_name="Schlagwörter";
+                                if( facettenname == "attr_kategorie_s" )
+                                    var real_name="Kategorie";
+                                if( facettenname == "attr_hersteller_s" )
+                                    var real_name="Hersteller";
+                                if( facettenname == "attr_bauart_s" )
+                                    var real_name="Bauart";
+                                if( facettenname == "attr_modell_s" )
+                                    var real_name="Modell";
+                                if( facettenname == "attr_farbe_s" )
+                                    var real_name="Farbe";
+                                if( facettenname == "attr_kraftstoffart_s" )
+                                    var real_name="Kraftstoff";
+                                if( facettenname == "attr_schaltung_s" )
+                                    var real_name="Schaltung";
+                                
+                                
+                                facetten.append("<b>" + real_name + "</b><br />");
+
+                                if( $.type(queryfilterfacetnames) === "array" && $.inArray( facettenname, queryfilterfacetnames ) != -1 )
+                                {
+                                    facetten.append("<a class='delete_filterquery' href='#" + facettenname + "'>Diesen Filter löschen: </a>");
+                                    $.each(msg.activefilters, function(activefilter_id, activefilter) {
+                                        if( activefilter.field== facettenname)
+                                        {
+                                            facetten.append("" + activefilter.value + "<br /><br />");
+                                        }
+                                    });
+                                    
+                                }
+                                else
+                                {
+                                
+                                    facetten_con=$("<ul class='facettencontainer'>");
+                                    
+                                    var f_count=0;
+                                    $.each(elemente, function(facettenfilter, itemcount)
+                                    {
+                                        f_count=f_count+1;
+                                        if( f_count > 5 )
+                                        {
+                                            facetten_con.append("<li value='" + facettenname + ";"+ facettenfilter + "' class='facetten_container_item queryfacette' style='display: none;'><span class='facette_value'>" + facettenfilter + "</span> (<b>" + itemcount + "</b>)</li>");
+                                        }
+                                        else
+                                        {
+                                            facetten_con.append("<li value='" + facettenname + ";" + facettenfilter + "' class='facetten_container_item  queryfacette'><span class='facette_value'>" + facettenfilter + "</span> (<b>" + itemcount + "</b>)</li>");
+                                        }
+                                    });
+                                    if( f_count > 5 )
+                                    {
+                                        facetten_con.append("<li class='facetten_container_item morefacetteli'>Alle anzeigen</li>");
+                                    }
+                                    facetten.append(facetten_con);
+                                }
+                            
+                            
+                            }
+                         }
+                        });
+                    
+                    $("#Resultset_facets").html(facetten);
+
+                    $("li.facetten_container_item.queryfacette").click(function() {
+                        var facettevalue=$(this).attr("value");
+                        newfilter=$("<input type='hidden' name='queryfilter[]' value='" + facettevalue + "' >");
+                        $("#queryfilters").append(newfilter);
+                        $("#info_page").val(0);
+                        $("#inform2").submit();
+                        
+                    });
+
+                    $("li.facetten_container_item.morefacetteli").click(function() {
+                        $(this).parent().children().show();
+                    });
+
+                    $("a.delete_filterquery").click(function(e)
+                            {
+                        e.preventDefault;
+                                var facettevalue=$(this).attr("href").replace("#", "");
+                                //alert(facettevalue.replace("#", ""));
+                                $("#queryfilters input[value^='" + facettevalue + "']" ).remove();
+                                $("#inform2").submit();
+                                return false;
+                                
+                            });
+                    
                 }
             })
         });
+        $("#inform2").submit();
     </script>
-<div id="searchResultAjax">Init</div>
-{% endblock %} 
+    <div id="searchResultAjax"></div>
     
+    <div class="break" style="height: 10px;"></div>
+  {% endblock %}
+  
+  
+  <style type="text/css">
+  #tabViews ul
+  {
+    margin-left: 0;
+      border-bottom: 1px solid #82b5d1;
+      width: 100%;
+  }
+  
+  #tabViews ul li.activeTab
+  {
+    background-color: #ffffff;
+      color: #000000;
+      border-bottom: none;
+  }
+  
+  li.tabViewItem
+  {
+    display:inline-block;
+    margin-right: 0px;
+    margin-left: 15px;
+      padding: 0 9px;
+      background-color: #82b5d1;
+    border: 1px solid #82b5d1;
+    color: #ffffff;
+      width: 160px;
+  }
+  li.facetten_container_item span:hover
+  {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+ li.facetten_container_item.morefacetteli:hover
+  {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  li.tabViewItem:hover
+  {
+    cursor: pointer;
+    text-decoration: underline;
+    background: #88ceee;
+  }
+  li.tabView_first
+  {
+    margin-left: 0;
+  }
+  .resultcontainer
+  {
+        width: 600px;
+  }
+  
+  #Resultset
+  {
+    float: left;
+    width: 620px;
+  }
+  
+ #Resultset_facets
+  {
+    float: left;
+    width: 300px;
+  }
+  
+  .resultcontainer .resultset_class
+  {
+      background-color: lightblue;
+      float: left;
+      height: 22px;
+      width: 600px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+  }
+  
+  .resultcontainer .resultset_item
+  {
+     min-height: 70px;
+     float: left;
+     clear: both;
+  }
+  .resultcontainer .resultset_item:hover
+  {
+     background-color: #fefefe;
+  }
+ .resultcontainer .resultset_item .entry_image
+  {
+    float: left;
+    width: 100px;
+      padding-right: 20px;
+  }
+  
+  .resultcontainer .resultset_item .resultset_item_type
+  {
+      border-bottom: 1px solid #dadada;
+      color: grey;
+      font-size: 10px;
+      text-align: right;
+        width: 600px;
+  }
+  
+  ul.facettencontainer
+  {
+     margin-left: 0;
+     background-color: lightgrey;
+  }
+  ul.facettencontainer li.facetten_container_item
+  {
+    background: none repeat scroll 0 0 #f4f4f4;
+    border-bottom: 1px solid #fff;
+    color: #000;
+    display: block;
+    font-size: 11px;
+    padding: 4px 0 4px 10px;
+    text-decoration: none;
+  }
+  ul.facettencontainer
+  {
+    border-image: none;
+    border: 1px solid #dadada;
+    margin: 2px 0 25px;
+    padding: 1px;
+  }
+  #wPaginate_unten
+  {
+    clear: both;
+    display: block;
+    float: left;
+    text-align: left;
+      width: 100%;
+  }
+</style>
+  
+<style type="text/css">
+    /*** styling ***/
+._wPaginate_link{
+display:inline-block; margin-left:5px;
+line-height:20px; width:20px; text-align:center; font-family:verdana; font-size:10px; cursor:pointer;
+border:solid black 1px; text-decoration:none; border-radius:5px;
+}
+._wPaginate_link_first, ._wPaginate_link_prev, ._wPaginate_link_next, ._wPaginate_link_last{width:auto; line-height:10px; padding:3px 5px;}
+/*** themes ***
+/*** blue ***/
+._wPaginate_blue ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+border:1px solid rgba(0, 0, 0, 0.0980392);
+border-bottom-color:rgba(0, 0, 0, 0.247059);
+background-color:#006DCC;
+color:#FFF;
+}
+._wPaginate_blue ._wPaginate_link:hover,
+._wPaginate_blue ._wPaginate_link.active{background-color:#0044CC}
+/*** grey ***/
+._wPaginate_grey ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(255, 255, 255, 0.75) 0 1px 1px;
+border:1px solid rgba(0, 0, 0, 0.14902);
+border-bottom-color:rgba(0, 0, 0, 0.247059);
+background-color:#F5F5F5;
+color:#333;
+}
+._wPaginate_grey ._wPaginate_link:hover,
+._wPaginate_grey ._wPaginate_link.active{background-color:#E6E6E6;}
+/*** greeen ***/
+._wPaginate_green ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+border:1px solid rgba(0, 0, 0, 0.0980392);
+border-bottom-color:rgba(0, 0, 0, 0.247059);
+background-color:#5BB75B;
+color:#FFF;
+}
+._wPaginate_green ._wPaginate_link:hover,
+._wPaginate_green ._wPaginate_link.active{background-color:#51A351;}
+/*** orange ***/
+._wPaginate_orange ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+border:1px solid rgba(0, 0, 0, 0.0980392);
+border-bottom-color: rgba(0, 0, 0, 0.247059);
+background-color:#FAA732;
+color:#FFF;
+}
+._wPaginate_orange ._wPaginate_link:hover,
+._wPaginate_orange ._wPaginate_link.active{background-color:#F89406;}
+/*** red ***/
+._wPaginate_red ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+border:1px solid rgba(0, 0, 0, 0.0980392);
+border-bottom-color:rgba(0, 0, 0, 0.247059);
+background-color:#DA4F49;
+color:#FFF;
+}
+._wPaginate_red ._wPaginate_link:hover,
+._wPaginate_red ._wPaginate_link.active{background-color:#BD362F;}
+/*** lightblue ***/
+._wPaginate_lightblue ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+border:1px solid rgba(0, 0, 0, 0.0980392);
+border-bottom-color:rgba(0, 0, 0, 0.247059);
+background-color:#49AFCD;
+color:#FFF;
+}
+._wPaginate_lightblue ._wPaginate_link:hover,
+._wPaginate_lightblue ._wPaginate_link.active{background-color:#2F96B4;}
+/*** black ***/
+._wPaginate_black ._wPaginate_link{
+box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+border:1px solid rgba(0, 0, 0, 0.0980392);
+border-bottom-color:rgba(0, 0, 0, 0.247059);
+background-color:#363636;
+color:#FFF;
+}
+._wPaginate_black ._wPaginate_link:hover,
+._wPaginate_black ._wPaginate_link.active{background-color:#222222;}
 
+._wPaginate_link_active
+{font-weight: bold; text-decoration: underline;}
+
+#wPaginate_unten
+{
+    height: 20px;
+}
+.waitforresponseimage{
+    margin-left: 40%;
+    margin-top: 40px;
+    text-align: center;
+    width: 100px;
+}
+</style>
 {% endblock %}
