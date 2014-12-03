@@ -1,9 +1,13 @@
 {% extends pagelayout %}
 
+
 {% block content %}
-<script type="text/javascript" src="https://raw.githubusercontent.com/websanova/wPaginate/master/wPaginate.js"></script>
-    <h1>Universalsearch</h1>
-    <form name="uniform" method="post" action="/universalsearch2" id="inform2">
+{% javascripts '@xrowEzPublishSolrDocsBundle/Resources/public/js/wPaginate.js' %}
+    <script src="{{ asset_url }}"></script>
+{% endjavascripts %}
+
+    <h1>Suche</h1>
+    <form name="uniform" method="post" action="/suche" id="inform2">
         <input type="text"
         {% if reqparas.SearchText is defined %}
         value="{{ reqparas.SearchText }}"
@@ -17,8 +21,7 @@
         <input type="hidden" value="tabView_Alle" name="info_tabview" id="info_tabview" />
         <input type="hidden" value="0" name="info_page" id="info_page" />
         <div id="queryfilters" style="display: none;"></div>
-        
-    </form>    
+    </form>
     <br />
 
     <div id="tabViews"></div>
@@ -59,7 +62,7 @@
                 dataType: 'json',
                 success: function(msg)
                 {
-                    $( "#Resultset" ).empty();
+                	$( "#Resultset" ).empty();
                     ul = $("<ul>");
                     ul.append("<li  id='tabView_Alle' class='tabViewItem tabView_first'>Alle (" + msg.facetten.main.totalCount + ")</li>");
                     $.each(msg.facetten.main.class, function(val, count) {
@@ -187,36 +190,36 @@
                                 {
                                     facetten.append("<a class='delete_filterquery' href='#" + facettenname + "'>Diesen Filter löschen: </a>");
                                     $.each(msg.activefilters, function(activefilter_id, activefilter) {
-                                        if( activefilter.field== facettenname)
-                                        {
-                                            facetten.append("" + activefilter.value + "<br /><br />");
-                                        }
-                                    });
+	                                    if( activefilter.field== facettenname)
+	                                    {
+	                                        facetten.append("" + activefilter.value + "<br /><br />");
+	                                    }
+	                                });
                                     
                                 }
                                 else
                                 {
                                 
-                                    facetten_con=$("<ul class='facettencontainer'>");
-                                    
-                                    var f_count=0;
-                                    $.each(elemente, function(facettenfilter, itemcount)
-                                    {
-                                        f_count=f_count+1;
-                                        if( f_count > 5 )
-                                        {
-                                            facetten_con.append("<li value='" + facettenname + ";"+ facettenfilter + "' class='facetten_container_item queryfacette' style='display: none;'><span class='facette_value'>" + facettenfilter + "</span> (<b>" + itemcount + "</b>)</li>");
-                                        }
-                                        else
-                                        {
-                                            facetten_con.append("<li value='" + facettenname + ";" + facettenfilter + "' class='facetten_container_item  queryfacette'><span class='facette_value'>" + facettenfilter + "</span> (<b>" + itemcount + "</b>)</li>");
-                                        }
-                                    });
-                                    if( f_count > 5 )
-                                    {
-                                        facetten_con.append("<li class='facetten_container_item morefacetteli'>Alle anzeigen</li>");
-                                    }
-                                    facetten.append(facetten_con);
+	                                facetten_con=$("<ul class='facettencontainer'>");
+	                                
+	                                var f_count=0;
+	                                $.each(elemente, function(facettenfilter, itemcount)
+	    	                        {
+	                                    f_count=f_count+1;
+	                                    if( f_count > 5 )
+	                                    {
+	                                        facetten_con.append("<li value='" + facettenname + ";"+ facettenfilter + "' class='facetten_container_item queryfacette' style='display: none;'><span class='facette_value'>" + facettenfilter + "</span> (<b>" + itemcount + "</b>)</li>");
+	                                    }
+	                                    else
+	                                    {
+	                                        facetten_con.append("<li value='" + facettenname + ";" + facettenfilter + "' class='facetten_container_item  queryfacette'><span class='facette_value'>" + facettenfilter + "</span> (<b>" + itemcount + "</b>)</li>");
+	                                    }
+	                                });
+	                                if( f_count > 5 )
+	                                {
+	                                	facetten_con.append("<li class='facetten_container_item morefacetteli'>Alle anzeigen</li>");
+	                                }
+	                                facetten.append(facetten_con);
                                 }
                             
                             
@@ -285,7 +288,7 @@
       background-color: #82b5d1;
     border: 1px solid #82b5d1;
     color: #ffffff;
-      width: 160px;
+  	width: 160px;
   }
   li.facetten_container_item span:hover
   {
@@ -390,7 +393,7 @@
     display: block;
     float: left;
     text-align: left;
-      width: 100%;
+  	width: 100%;
   }
 </style>
   
