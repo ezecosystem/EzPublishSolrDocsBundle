@@ -1,20 +1,20 @@
 parameters:
-    ezpublish.persistence.solrdoc.slot.class: eZ\Publish\Core\Persistence\Solr\Slot
-    ezpublish.persistence.solrdoc.slot.publish_version.class: eZ\Publish\Core\Persistence\Solr\Slot\PublishVersion
-    ezpublish.persistence.solrdoc.slot.copy_content.class: eZ\Publish\Core\Persistence\Solr\Slot\CopyContent
-    ezpublish.persistence.solrdoc.slot.delete_content.class: eZ\Publish\Core\Persistence\Solr\Slot\DeleteContent
-    ezpublish.persistence.solrdoc.slot.delete_version.class: eZ\Publish\Core\Persistence\Solr\Slot\DeleteVersion
-    ezpublish.persistence.solrdoc.slot.delete_location.class: eZ\Publish\Core\Persistence\Solr\Slot\DeleteLocation
-    ezpublish.persistence.solrdoc.slot.create_user.class: eZ\Publish\Core\Persistence\Solr\Slot\CreateUser
-    ezpublish.persistence.solrdoc.slot.create_user_group.class: eZ\Publish\Core\Persistence\Solr\Slot\CreateUserGroup
-    ezpublish.persistence.solrdoc.slot.move_user_group.class: eZ\Publish\Core\Persistence\Solr\Slot\MoveUserGroup
-    ezpublish.persistence.solrdoc.slot.copy_subtree.class: eZ\Publish\Core\Persistence\Solr\Slot\CopySubtree
-    ezpublish.persistence.solrdoc.slot.move_subtree.class: eZ\Publish\Core\Persistence\Solr\Slot\MoveSubtree
-    ezpublish.persistence.solrdoc.slot.trash.class: eZ\Publish\Core\Persistence\Solr\Slot\Trash
-    ezpublish.persistence.solrdoc.slot.recover.class: eZ\Publish\Core\Persistence\Solr\Slot\Recover
-    ezpublish.persistence.solrdoc.slot.hide_location.class: eZ\Publish\Core\Persistence\Solr\Slot\HideLocation
-    ezpublish.persistence.solrdoc.slot.unhide_location.class: eZ\Publish\Core\Persistence\Solr\Slot\UnhideLocation
-    ezpublish.persistence.solrdoc.slot.set_content_state.class: eZ\Publish\Core\Persistence\Solr\Slot\SetContentState
+    ezpublish.persistence.solrdoc.slot.class: eZ\Publish\Core\Search\Common\Slot
+    ezpublish.persistence.solrdoc.slot.publish_version.class: eZ\Publish\Core\Search\Common\Slot\PublishVersion
+    ezpublish.persistence.solrdoc.slot.copy_content.class: eZ\Publish\Core\Search\Common\Slot\CopyContent
+    ezpublish.persistence.solrdoc.slot.delete_content.class: eZ\Publish\Core\Search\Common\Slot\DeleteContent
+    ezpublish.persistence.solrdoc.slot.delete_version.class: eZ\Publish\Core\Search\Common\Slot\DeleteVersion
+    ezpublish.persistence.solrdoc.slot.delete_location.class: eZ\Publish\Core\Search\Common\Slot\CreateLocation
+    ezpublish.persistence.solrdoc.slot.create_user.class: eZ\Publish\Core\Search\Common\Slot\CreateUser
+    ezpublish.persistence.solrdoc.slot.create_user_group.class: eZ\Publish\Core\Search\Common\Slot\CreateUserGroup
+    ezpublish.persistence.solrdoc.slot.move_user_group.class: eZ\Publish\Core\Search\Common\Slot\MoveUserGroup
+    ezpublish.persistence.solrdoc.slot.copy_subtree.class: eZ\Publish\Core\Search\Common\Slot\CopySubtree
+    ezpublish.persistence.solrdoc.slot.move_subtree.class: eZ\Publish\Core\Search\Common\Slot\MoveSubtree
+    ezpublish.persistence.solrdoc.slot.trash.class: eZ\Publish\Core\Search\Common\Slot\Trash
+    ezpublish.persistence.solrdoc.slot.recover.class: eZ\Publish\Core\Search\Common\Slot\Recover
+    ezpublish.persistence.solrdoc.slot.hide_location.class: eZ\Publish\Core\Search\Common\Slot\HideLocation
+    ezpublish.persistence.solrdoc.slot.unhide_location.class: eZ\Publish\Core\Search\Common\Slot\UnhideLocation
+    ezpublish.persistence.solrdoc.slot.set_content_state.class: eZ\Publish\Core\Search\Common\Slot\SetContentState
 
 services:
     ezpublish.persistence.solrdoc.slot:
@@ -23,6 +23,7 @@ services:
         arguments:
             - @ezpublish.api.inner_repository
             - @ezpublish.api.persistence_handler
+            - @ezpublish.spi.search
 
     ezpublish.persistence.solrdoc.slot.publish_version:
         parent: ezpublish.persistence.solrdoc.slot
