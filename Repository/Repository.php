@@ -211,9 +211,12 @@ class Repository implements RepositoryInterface
      * @param array $serviceSettings
      * @param \eZ\Publish\API\Repository\Values\User\User|null $user
      */
-    public function __construct( PersistenceHandler $persistenceHandler = null, array $serviceSettings = array(), User $user = null )
+    public function __construct( PersistenceHandler $persistenceHandler = null,
+        SearchHandler $searchHandler,
+        array $serviceSettings = array(), User $user = null )
     {
         $this->persistenceHandler = $persistenceHandler;
+        $this->searchHandler = $searchHandler;
         $this->serviceSettings = $serviceSettings + array(
             'content' => array(),
             'contentType' => array(),
