@@ -45,6 +45,23 @@ use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
  */
 class Handler implements SearchHandlerInterface
 {
+    
+    /**
+     * @return \eZ\Publish\SPI\Search\Content\Handler
+     */
+    public function contentSearchHandler()
+    {
+        return true;
+    }
+    
+    /**
+     * @return \eZ\Publish\SPI\Search\Content\Location\Handler
+     */
+    public function locationSearchHandler()
+    {
+        return true;
+    }
+    
     /**
      * Content locator gateway.
      *
