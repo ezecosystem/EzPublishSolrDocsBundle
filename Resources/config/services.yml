@@ -63,6 +63,7 @@ services:
         factory_method: buildRepository
         arguments:
             - @ezpublish.solrapi.persistence_handler
+            - @ezpublish.spi.search
         lazy: false
 
     ezpublish.solrapi.service.content:

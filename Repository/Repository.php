@@ -13,6 +13,7 @@ use eZ\Publish\Core\Base\Exceptions\InvalidArgumentValue;
 use eZ\Publish\SPI\Persistence\Handler as PersistenceHandler;
 use eZ\Publish\API\Repository\Repository as RepositoryInterface;
 use eZ\Publish\API\Repository\Values\ValueObject;
+use eZ\Publish\SPI\Search\Handler as SearchHandler;
 use eZ\Publish\API\Repository\Values\User\User;
 use eZ\Publish\API\Repository\Values\User\Limitation;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException as APINotFoundException;
@@ -38,6 +39,15 @@ class Repository implements RepositoryInterface
      *
      * @var \eZ\Publish\API\Repository\Values\User\User
      */
+    
+    protected $searchHandler;
+    
+    /**
+     * Currently logged in user object for permission purposes
+     *
+     * @var \eZ\Publish\API\Repository\Values\User\User
+     */
+    
     protected $currentUser;
 
     /**
